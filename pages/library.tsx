@@ -2,6 +2,8 @@ import { FC, useState } from 'react';
 import Modal from '@mui/material/Modal';
 import Box from '@mui/material/Box';
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
+import GameCard from '../components/gameCard';
+import game from '../mockApiData.json';
 
 const modalBoxStyle = {
   position: 'absolute' as 'absolute',
@@ -25,6 +27,7 @@ const Library: FC = (props) => {
         <h1>
           library
         </h1>
+        <GameCard game={game} />
         <button onClick={handleOpen}>Add Game +</button>
         <Modal
           open={open}
@@ -33,10 +36,10 @@ const Library: FC = (props) => {
           <Box sx={modalBoxStyle}>
             <div>
               <h2>
-              Search for Game
+                Search for Game
               </h2>
               <input type="text"></input>
-              <SearchRoundedIcon/>
+              <SearchRoundedIcon />
             </div>
           </Box>
         </Modal>
