@@ -1,4 +1,5 @@
-import '../styles/globals.css'
+import '../styles/globals.css';
+import '../styles/gameCard.css';
 import React from 'react';
 import MenuRoundedIcon from '@mui/icons-material/MenuRounded';
 import Tooltip from '@mui/material/Tooltip';

@@ -1,0 +1,54 @@
+.gameCard {
+  display: grid;
+  width: 400px;
+  height: 600px;
+  grid-template-columns: 10% 40% 29% 11% 10%;
+  grid-template-rows: 4% 10% 45% 7% 3% 4% 16% 7% 4%;
+}
+.gameImage {
+  grid-column: 2 / 5;
+  grid-row: 2 / 4;
+
+}
+
+.favoriteButton {
+  grid-column: 4 / 5;
+  grid-row: 2 / 3;
+}
+
+.gameName {
+  grid-column: 2 / 3;
+  grid-row: 4 / 5;
+}
+
+.gamePlayers {
+  grid-column: 3 / 5;
+  grid-row: 4 / 5;
+}
+
+.cardDivider {
+  grid-column: 2 / 5;
+  grid-row: 5 / 6;
+
+}
+
+.gameTime {
+  grid-column: 2 / 3;
+  grid-row: 6 / 7;
+}
+
+.gameAge {
+  grid-column: 3 / 5;
+  grid-row: 6 / 7;
+}
+
+.gameDescription {
+  grid-column: 2 / 5;
+  grid-row: 7 / 8;
+  overflow: scroll;
+}
+
+.detailButton {
+  grid-column: 2 / 3;
+  grid-row: 8 / 9;
+}
