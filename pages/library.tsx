@@ -3,19 +3,10 @@ import Modal from '@mui/material/Modal';
 import Box from '@mui/material/Box';
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
 import GameCard from '../components/gameCard';
+import LibraryFilter from '../components/libraryFilter';
 import game from '../mockApiData.json';
+import modalBoxStyle from '../components/modalStyle';
 
-const modalBoxStyle = {
-  position: 'absolute' as 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: 400,
-  bgcolor: 'background.paper',
-  border: '2px solid #000',
-  boxShadow: 24,
-  p: 4,
-};
 
 const Library: FC = (props) => {
   const [open, setOpen] = useState(false);
@@ -27,6 +18,7 @@ const Library: FC = (props) => {
         <h1>
           library
         </h1>
+        <LibraryFilter />
         <GameCard game={game} />
         <button onClick={handleOpen}>Add Game +</button>
         <Modal

@@ -1,60 +1,86 @@
-import { FC, useState } from 'react';
+import React, { FC, useState } from 'react';
 import Image from 'next/image';
 import FavoriteBorderRoundedIcon from '@mui/icons-material/FavoriteBorderRounded';
 import FavoriteRoundedIcon from '@mui/icons-material/FavoriteRounded';
-import Divider from '@mui/material/Divider';
+// import Divider from '@mui/material/Divider';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import parse from 'html-react-parser';
+import Modal from '@mui/material/Modal';
+import Box from '@mui/material/Box';
+import modalBoxStyle from './modalStyle';
 // import '../styles/gameCard.css';
 
-
-const GameCard: FC = (props) => {
+const GameCard: FC = ({ game }) => {
   const [isFavorite, setFavorite] = useState(false);
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
   return (
     <div className="gameCard">
       <div
         className="gameImage"
-        >
-      <Image
-        src={props.game.image_url}
-        alt={`${props.game.name} image`}
-        width={300}
-        height={300}
-      />
+      >
+        <Image
+          src={game.image_url}
+          alt={`${game.name} image`}
+          width={250}
+          height={250}
+        // layout="fill"
+        />
       </div>
       <IconButton
         aria-label="add to favorites"
         color="primary"
         className="favoriteButton"
-        onClick={() => setFavorite(!isFavorite)}>
-        {isFavorite ? <FavoriteRoundedIcon /> : <FavoriteBorderRoundedIcon />}
+        onClick={() => setFavorite(!isFavorite)}
+      >
+        {isFavorite ? <FavoriteRoundedIcon fontSize="large" /> : <FavoriteBorderRoundedIcon fontSize="large" />}
       </IconButton>
       <div className="gameName">
-        {props.game.name}
+        {game.name}
       </div>
       <div className="gamePlayers">
-        {props.game.min_players} - {props.game.max_players} Players
+        {game.min_players}
+        -
+        {game.max_players}
+        Players
       </div>
-      <Divider className="cardDivider"/>
+      <div className="cardDivider" />
+      {/* <Divider className="cardDivider"/> */}
       <div className="gameTime">
-        {props.game.min_playtime} - {props.game.max_playtime} minutes
+        {game.min_playtime}
+        - {game.max_playtime} minutes
       </div>
       <div className="gameAge">
-        Ages {props.game.min_age}+
+        Ages {game.min_age}+
       </div>
       <div className="gameDescription">
-        {parse(props.game.description)}
+        {parse(game.description)}
       </div>
       <Button
         variant="outlined"
         className="detailButton"
+        onClick={handleOpen}
       >
-        Details
+        More Details
       </Button>
-
+      <Modal
+        open={open}
+        onClose={handleClose}
+      >
+        <Box sx={modalBoxStyle}>
+          <div>
+            Published {game.year_published}
+          </div>
+          <div>
+            {parse(game.description)}
+          </div>
+        </Box>
+      </Modal>
     </div>
-  )
-}
+
+  );
+};
 
 export default GameCard;

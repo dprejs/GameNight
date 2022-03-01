@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-props-no-spreading */
 import '../styles/globals.css';
 import '../styles/gameCard.css';
 import React from 'react';
@@ -37,9 +38,7 @@ function MyApp({ Component, pageProps }) {
         >
           <MenuItem>
             <Link href="/library">
-              <a>
-                Library
-              </a>
+              Library
             </Link>
           </MenuItem>
           <MenuItem>
@@ -47,16 +46,14 @@ function MyApp({ Component, pageProps }) {
           </MenuItem>
           <MenuItem>
             <Link href="/">
-              <a>
-                Home
-              </a>
+              Home
             </Link>
           </MenuItem>
         </Menu>
       </div>
       <Component {...pageProps} />
     </>
-  )
+  );
 }
 
-export default MyApp
+export default MyApp;

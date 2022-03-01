@@ -1,7 +1,8 @@
-import Head from 'next/head'
-import Image from 'next/image'
-import styles from '../styles/Home.module.css'
+import React from 'react';
+import Head from 'next/head';
+import Image from 'next/image';
 import Link from 'next/link';
+import styles from '../styles/Home.module.css';
 
 export default function Home() {
   return (
@@ -19,10 +20,10 @@ export default function Home() {
 
         <div className={styles.grid}>
           <Link href="/library">
-            <a className={styles.card}>
+            <div className={styles.card}>
               <h2>Games</h2>
               <p>list of games</p>
-            </a>
+            </div>
           </Link>
 
         </div>
