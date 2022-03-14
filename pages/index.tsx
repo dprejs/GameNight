@@ -27,6 +27,14 @@ export default function Home() {
           </Link>
 
         </div>
+        <div className={styles.grid}>
+          <Link href="/login">
+            <div className={styles.card}>
+              <h2>Login / Sign up</h2>
+            </div>
+          </Link>
+
+        </div>
       </main>
 
       <footer className={styles.footer}>

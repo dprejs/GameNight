@@ -25,6 +25,9 @@
       "react/jsx-filename-extension": [1, { "extensions": [".tsx", ".jsx"] }],
       "import/extensions": "off",
       "import/no-unresolved": "off",
-      "react/jsx-one-expression-per-line": "off"
+      "react/jsx-one-expression-per-line": "off",
+    },
+    "required": {
+        "some": [ "nesting", "id" ]
     }
 }

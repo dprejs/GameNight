@@ -1,0 +1,26 @@
+#loginPage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: calc(100vh - 70px);
+}
+
+.loginBox {
+  display: flex;
+  justify-content: center;
+  width: fit-content;
+  border: 1px solid black;
+  border-radius: 15px;
+}
+
+.loginPanel {
+  display: flex;
+  flex-direction: column;
+  padding: 0px 25px;
+}
+.loginPanel h2 {
+  margin-top: 0px;
+}
+.loginPanel > * {
+  margin-bottom: 10px;
+}

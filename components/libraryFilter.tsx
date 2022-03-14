@@ -12,18 +12,21 @@ const LibraryFilter:FC = () => {
   };
 
   return (
-    <div>
-      <div>
+    <div className="libraryFilter">
+      <h2 className="filterHeader">
         Filter
-      </div>
+      </h2>
+      <div className="filterDivider" />
       <div>
         Search
         <input type="text" />
       </div>
+      <div className="filterDivider" />
       <div>
         Number of Players
         <input type="number" />
       </div>
+      <div className="filterDivider" />
       <div>
         Game Length
         <Slider
@@ -32,8 +35,10 @@ const LibraryFilter:FC = () => {
           onChange={handleChange}
           valueLabelDisplay="auto"
           getAriaValueText={valuetext}
+          color="primary"
         />
       </div>
+      <div className="filterDivider" />
       <div>
         Youngest Player
         <input type="number" />

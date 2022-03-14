@@ -1,13 +1,19 @@
 CREATE TABLE "games" (
-  "GameId" int PRIMARY KEY,
+  "id" varchar PRIMARY KEY,
   "name" varchar UNIQUE NOT NULL,
-  "minPlayers" int NOT NULL,
-  "maxPlayers" int NOT NULL,
-  "minTime" int NOT NULL,
-  "maxTime" int NOT NULL,
-  "minAge" int,
-  "maxAge" int,
-  "mainPhoto" int
+  "description" varchar,
+  "min_players" int NOT NULL,
+  "max_players" int NOT NULL,
+  "min_playtime" int NOT NULL,
+  "max_playime" int NOT NULL,
+  "min_age" int,
+  "thumb_url" varchar,
+  "img_url" varchar,
+  "rules_url" varchar,
+  "official_url" varchar,
+  "year_published" int,
+  "expansionTo" int,
+  "isExpansion" bool
 );
 
 CREATE TABLE "gamePhotos" (
@@ -28,19 +34,26 @@ CREATE TABLE "gameTags" (
 );
 
 CREATE TABLE "users" (
-  "userId" int PRIMARY KEY,
+  "uid" varchar PRIMARY KEY,
   "username" varchar UNIQUE NOT NULL,
-  "hashedPW" varchar NOT NULL
+  "accessToken" varchar NOT NULL
 );
 
 CREATE TABLE "libraries" (
-  "userId" int,
+  "relationId" int PRIMARY KEY,
+  "uid" int,
   "gameId" int
 );
 
 CREATE TABLE "groups" (
   "groupId" int PRIMARY KEY,
   "groupName" varchar NOT NULL
+);
+
+CREATE TABLE "groupMembers" (
+  "memberId" int PRIMARY KEY,
+  "userId" int,
+  "groupId" int
 );
 
 CREATE TABLE "comments" (
@@ -51,16 +64,42 @@ CREATE TABLE "comments" (
   "groupId" int
 );
 
-ALTER TABLE "gamePhotos" ADD FOREIGN KEY ("GameId") REFERENCES "games" ("GameId");
+CREATE TABLE "friends" (
+  "friendId" int PRIMARY KEY,
+  "user1" int,
+  "user2" int
+);
 
-ALTER TABLE "gameTags" ADD FOREIGN KEY ("GameId") REFERENCES "games" ("GameId");
+CREATE TABLE "wishList" (
+  "wishId" int PRIMARY KEY,
+  "gameId" int,
+  "userId" int
+);
+
+ALTER TABLE "gamePhotos" ADD FOREIGN KEY ("GameId") REFERENCES "games" ("id");
+
+ALTER TABLE "gameTags" ADD FOREIGN KEY ("GameId") REFERENCES "games" ("id");
 
 ALTER TABLE "gameTags" ADD FOREIGN KEY ("TagId") REFERENCES "tags" ("TagId");
 
-ALTER TABLE "libraries" ADD FOREIGN KEY ("gameId") REFERENCES "games" ("GameId");
+ALTER TABLE "libraries" ADD FOREIGN KEY ("gameId") REFERENCES "games" ("id");
 
-ALTER TABLE "libraries" ADD FOREIGN KEY ("userId") REFERENCES "users" ("userId");
+ALTER TABLE "libraries" ADD FOREIGN KEY ("uid") REFERENCES "users" ("uid");
 
-ALTER TABLE "comments" ADD FOREIGN KEY ("GameId") REFERENCES "games" ("GameId");
+ALTER TABLE "wishList" ADD FOREIGN KEY ("gameId") REFERENCES "games" ("id");
+
+ALTER TABLE "wishList" ADD FOREIGN KEY ("userId") REFERENCES "users" ("uid");
+
+ALTER TABLE "groupMembers" ADD FOREIGN KEY ("userId") REFERENCES "users" ("uid");
+
+ALTER TABLE "groupMembers" ADD FOREIGN KEY ("groupId") REFERENCES "groups" ("groupId");
+
+ALTER TABLE "friends" ADD FOREIGN KEY ("user1") REFERENCES "users" ("uid");
+
+ALTER TABLE "friends" ADD FOREIGN KEY ("user2") REFERENCES "users" ("uid");
+
+ALTER TABLE "comments" ADD FOREIGN KEY ("GameId") REFERENCES "games" ("id");
 
 ALTER TABLE "comments" ADD FOREIGN KEY ("groupId") REFERENCES "groups" ("groupId");
+
+ALTER TABLE "games" ADD FOREIGN KEY ("id") REFERENCES "games" ("expansionTo");

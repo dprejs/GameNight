@@ -24,8 +24,8 @@ const GameCard: FC = ({ game }) => {
         <Image
           src={game.image_url}
           alt={`${game.name} image`}
-          width={250}
-          height={250}
+          width={175}
+          height={175}
         // layout="fill"
         />
       </div>
@@ -62,6 +62,7 @@ const GameCard: FC = ({ game }) => {
         variant="outlined"
         className="detailButton"
         onClick={handleOpen}
+        color="inherit"
       >
         More Details
       </Button>
