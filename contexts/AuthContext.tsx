@@ -7,12 +7,12 @@ import {
 } from 'firebase/auth';
 import { auth } from '../components/firebase';
 
-const AuthContext = createContext(null);
+export const AuthContext = createContext(null);
 
 export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }) => {
-  const [currentUser, setCurrentUser] = useState();
+  const [currentUser, setCurrentUser] = useState(undefined);
 
   const signUp = (email, password) => {
     createUserWithEmailAndPassword(auth, email, password)
@@ -25,19 +25,19 @@ export const AuthProvider = ({ children }) => {
   const value = useMemo(() => ({ currentUser, signUp }), []);
 
   onAuthStateChanged(auth, (user) => {
-    console.log(user);
+    // console.log('auth state change', user);
     setCurrentUser(user);
   });
 
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setCurrentUser(user);
-    });
-    return unsubscribe;
-  }, []);
+  // useEffect(() => {
+  //   const unsubscribe = onAuthStateChanged(auth, (user) => {
+  //     setCurrentUser(user);
+  //   });
+  //   return unsubscribe;
+  // }, []);
 
   return (
-    <AuthContext.Provider value={value}>
+    <AuthContext.Provider value={currentUser}>
       {children}
     </AuthContext.Provider>
   );

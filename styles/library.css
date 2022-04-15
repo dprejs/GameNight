@@ -10,6 +10,16 @@
   overflow-y: hidden;
 }
 
+.gameList {
+  grid-column: 3 / 5;
+  grid-row: 2 / 3;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  overflow-y: scroll;
+  padding-bottom: 100px;
+}
+
 .libraryHeader {
   grid-column: 3 / 4;
   grid-row: 1 / 2;
@@ -29,19 +39,20 @@
 
 .gameCard {
   background-color: #F8F8FF;
+  margin: 5px;
   color: black;
   display: grid;
-  width: 350px;
+  width: 300px;
   height: 475px;
-  grid-template-columns: 6% 65% 13% 10% 6%;
-  grid-template-rows: 4% 10% 30% auto 1% 4% auto 4% 4%;
+  grid-template-columns: 6% 44% 21% 13% 10% 6%;
+  grid-template-rows: 4% 10% 30% auto 1% 4% auto auto 4%;
   border: 2px solid black;
   border-radius: 10px;
   grid-column: 3 / 5;
   grid-row: 2 / 3;
 }
 .gameImage {
-  grid-column: 2 / 5;
+  grid-column: 2 / 6;
   grid-row: 2 / 4;
   align-self: center;
   justify-self: center;
@@ -49,12 +60,12 @@
 }
 
 .favoriteButton {
-  grid-column: 4 / 5;
+  grid-column: 5 / 6;
   grid-row: 2 / 3;
 }
 
 .gameName {
-  grid-column: 2 / 3;
+  grid-column: 2 / 4;
   grid-row: 4 / 5;
   font-size: 25px;
   font-weight: bold;
@@ -62,14 +73,14 @@
 }
 
 .gamePlayers {
-  grid-column: 3 / 5;
+  grid-column: 4 / 6;
   grid-row: 4 / 5;
   justify-self: end;
   align-self: end;
 }
 
 .cardDivider {
-  grid-column: 2 / 5;
+  grid-column: 2 / 6;
   grid-row: 5 / 6;
   background-color: black;
   /* border-radius: 10px; */
@@ -83,25 +94,46 @@
 }
 
 .gameAge {
-  grid-column: 3 / 5;
+  grid-column: 4 / 6;
   grid-row: 6 / 7;
   justify-self: end;
 }
 
 .gameDescription {
-  grid-column: 2 / 5;
+  grid-column: 2 / 6;
   grid-row: 7 / 8;
-  overflow: hidden;
+  overflow-y: auto;
+  text-overflow: ellipsis;
+  height: auto;
+  margin: 5px 0px;
+}
+
+.gameDescription > * {
+  text-overflow: ellipsis;
 }
 
 .detailButton {
   grid-column: 2 / 3;
   grid-row: 8 / 9;
+  font-size: .75rem;
+  margin-right: 3px;
+  padding: 0px 15px;
+  line-height: 1.5;
+}
+
+.addToLibrary{
+  grid-column: 3 / 6;
+  grid-row: 8 / 9;
+  font-size: .75rem;
+  margin-left: 3px;
+  padding: 0px 15px;
+  line-height: 1.5;
 }
 
 .libraryFilter {
   background-color: #F8F8FF;
   color: black;
+  font-size: larger;
   width: 200px;
   height: 100%;
   grid-column: 1 / 2;
@@ -109,9 +141,17 @@
   padding: 0px 10px;
 }
 
+.libraryFilter > * {
+  margin: 15px 0px;
+}
+
 .filterDivider {
   background-color: black;
   height: 1px;
+}
+
+.resetButton {
+  width: 100%;
 }
 
 .searchResults {

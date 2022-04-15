@@ -1,9 +1,11 @@
 import React, {
-  createContext, useContext, useEffect, useMemo, useState,
+  createContext, useContext, useEffect, useMemo, useState, FC,
 } from 'react';
 import { mobileCheck, tabletCheck } from '../components/deviceCheck';
 
-export const DeviceContext = createContext(false);
+export const DeviceContext = createContext({isMobile: false,
+isTablet: false,
+});
 
 const DeviceContextProvider = ({ children }) => {
   const [isMobile, setIsMobile] = useState(false);
@@ -14,8 +16,7 @@ const DeviceContextProvider = ({ children }) => {
     setIsTablet(tabletCheck());
   }, []);
 
-  const value = useMemo(() => ({ isMobile, isTablet }), []);
-
+  const value = useMemo(() => ({ isMobile, isTablet }), [isMobile, isTablet]);
   return (
     <DeviceContext.Provider value={value}>
       {children}

@@ -9,10 +9,12 @@ import {
   GoogleAuthProvider,
   signInWithRedirect,
   signInWithEmailAndPassword,
+  updateProfile,
 } from 'firebase/auth';
 import { auth } from '../components/firebase';
 import { useAuth } from '../contexts/AuthContext';
 import { DeviceContext } from '../contexts/DeviceContext';
+import axios from 'axios';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -22,7 +24,9 @@ interface TabPanelProps {
 
 const provider = new GoogleAuthProvider();
 
-const TabPanel: FC = (props: TabPanelProps) => {
+
+//panel for login/sign up tabs
+const TabPanel: FC<any> = (props: TabPanelProps) => {
   const { children, value, index } = props;
 
   return (
@@ -50,6 +54,7 @@ const LoginPage: FC = () => {
     email: '',
     password: '',
     passwordConfirm: '',
+    username: '',
   });
   const [signIn, setSignIn] = useState({
     email: '',
@@ -81,7 +86,19 @@ const LoginPage: FC = () => {
   const signUpSubmit = (event) => {
     event.preventDefault();
     createUserWithEmailAndPassword(auth, signUp.email, signUp.password)
-      .then(() => console.log('created'))
+      .then((userCredential) => {
+        const user = userCredential.user;
+        updateProfile(auth.currentUser, {
+          displayName: signUp.username,
+        })
+        .catch((err) => {
+          console.log('error updating username', err);
+        })
+        axios.post('/../api/login/createUser', {...user, username: signUp.username})
+        .catch((err) => {
+          console.log('error creating user', err);
+        })
+      })
       .catch((err) => console.log(err.message));
   };
 
@@ -93,13 +110,23 @@ const LoginPage: FC = () => {
     })
   };
 
+  const googleSignInApiCall = (user) => {
+    console.log(user);
+    axios.post('/../api/login/googleSignIn', user)
+    .catch((err) => {
+      console.log('error checking user', err);
+    })
+  }
+
   const googleSignIn = (event) => {
+    //login with redirect in mobile browsers
     if(device.isMobile || device.isTablet) {
       signInWithRedirect(auth, provider)
         .then((result) => {
           const credential = GoogleAuthProvider.credentialFromResult(result);
           const token = credential.accessToken;
           const { user } = result;
+          googleSignInApiCall(user);
         })
         .catch((error) => {
           const errorCode = error.code;
@@ -109,11 +136,13 @@ const LoginPage: FC = () => {
           console.log(errorCode, errorMessage);
         });
     } else {
+    //login with popup for desktop
       signInWithPopup(auth, provider)
         .then((result) => {
           const credential = GoogleAuthProvider.credentialFromResult(result);
           const token = credential.accessToken;
           const { user } = result;
+          googleSignInApiCall(user);
         })
         .catch((error) => {
           const errorCode = error.code;
@@ -173,6 +202,18 @@ const LoginPage: FC = () => {
               <h2>
                 Sign Up
               </h2>
+              <label htmlFor="signUpUserName">
+                UserName
+              </label>
+              <input
+                type="text"
+                name="username"
+                id="signUpUserName"
+                placeholder="enter username"
+                value={signUp.username}
+                onChange={signUpHandleChange}
+                required
+              />
               <label htmlFor="signUpEmail">
                 Email
               </label>

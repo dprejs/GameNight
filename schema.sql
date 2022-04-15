@@ -35,14 +35,14 @@ CREATE TABLE "gameTags" (
 
 CREATE TABLE "users" (
   "uid" varchar PRIMARY KEY,
-  "username" varchar UNIQUE NOT NULL,
-  "accessToken" varchar NOT NULL
+  "username" varchar NOT NULL,
+  "accesstoken" varchar NOT NULL
 );
 
 CREATE TABLE "libraries" (
-  "relationId" int PRIMARY KEY,
-  "uid" int,
-  "gameId" int
+  "relation_id" SERIAL PRIMARY KEY,
+  "uid" varchar,
+  "game_id" varchar
 );
 
 CREATE TABLE "groups" (
@@ -82,7 +82,7 @@ ALTER TABLE "gameTags" ADD FOREIGN KEY ("GameId") REFERENCES "games" ("id");
 
 ALTER TABLE "gameTags" ADD FOREIGN KEY ("TagId") REFERENCES "tags" ("TagId");
 
-ALTER TABLE "libraries" ADD FOREIGN KEY ("gameId") REFERENCES "games" ("id");
+ALTER TABLE "libraries" ADD FOREIGN KEY ("game_id") REFERENCES "games" ("id");
 
 ALTER TABLE "libraries" ADD FOREIGN KEY ("uid") REFERENCES "users" ("uid");
 
