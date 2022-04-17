@@ -15,6 +15,7 @@ import { auth } from '../components/firebase';
 import { useAuth } from '../contexts/AuthContext';
 import { DeviceContext } from '../contexts/DeviceContext';
 import axios from 'axios';
+import { Router, useRouter } from 'next/router';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -61,6 +62,8 @@ const LoginPage: FC = () => {
     password: '',
   })
   const device = useContext(DeviceContext);
+  const router = useRouter();
+
 
   const handleChange = (event, newValue) => {
     event.preventDefault();
@@ -105,6 +108,9 @@ const LoginPage: FC = () => {
   const signInSubmit = (event) => {
     event.preventDefault();
     signInWithEmailAndPassword(auth, signIn.email, signIn.password)
+    .then(() => {
+      router.push('/../library')
+    })
     .catch((error) => {
       console.log(error);
     })
@@ -127,6 +133,7 @@ const LoginPage: FC = () => {
           const token = credential.accessToken;
           const { user } = result;
           googleSignInApiCall(user);
+          router.push('/../library')
         })
         .catch((error) => {
           const errorCode = error.code;
@@ -143,6 +150,7 @@ const LoginPage: FC = () => {
           const token = credential.accessToken;
           const { user } = result;
           googleSignInApiCall(user);
+          router.push('/../library')
         })
         .catch((error) => {
           const errorCode = error.code;

@@ -3,7 +3,7 @@
   color: #F8F8FF;
   display: grid;
   grid-template-columns: min-content 15px auto auto;
-  grid-template-rows: auto 100%;
+  grid-template-rows: auto auto 100%;
   top: 0;
   bottom: 0;
   height: calc(100vh - 70px);
@@ -12,22 +12,27 @@
 
 .gameList {
   grid-column: 3 / 5;
-  grid-row: 2 / 3;
+  grid-row: 3 / 4;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
   overflow-y: scroll;
   padding-bottom: 100px;
+  justify-content: space-evenly;
+}
+
+.gameList::-webkit-scrollbar-thumb {
+  background-color: #333;
 }
 
 .libraryHeader {
   grid-column: 3 / 4;
-  grid-row: 1 / 2;
+  grid-row: 2 / 3;
 }
 
 .addGame {
   grid-column: 4 / 5;
-  grid-row: 1 / 2;
+  grid-row: 2 / 3;
   align-self: center;
   justify-self: end;
   margin-right: 5px;
@@ -35,6 +40,11 @@
   color: black;
   border: 1px solid black;
   border-radius: 10px;
+}
+
+.addGame.mobile {
+  margin-top: 10px;
+  grid-row: 1 / 2;
 }
 
 .gameCard {
@@ -137,7 +147,7 @@
   width: 200px;
   height: 100%;
   grid-column: 1 / 2;
-  grid-row: 1 / 3;
+  grid-row: 1 / 4;
   padding: 0px 10px;
 }
 
@@ -158,4 +168,34 @@
   overflow-y: auto;
   width: fit-content;
   max-height: 500px;
+}
+.drawer {
+  grid-column: 3/4;
+  grid-row: 1/2;
+  margin-top: 10px;
+}
+.iconButton {
+  /* align-self: center; */
+  /* justify-self: end; */
+  margin-right: 5px;
+  background-color: var(--white);
+  color: black;
+  border: 1px solid black;
+  border-radius: 10px;
+}
+
+#game-search-modal {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.search-header {
+  width: 75%;
+  display: flex;
+  justify-content: center;
+}
+.search-header svg {
+  margin-left: 10px;
 }

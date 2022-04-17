@@ -12,8 +12,11 @@ import modalBoxStyle from '../components/modalStyle';
 import { AuthContext } from '../contexts/AuthContext';
 import { useRouter } from 'next/router';
 import GameList from '../components/GameList';
-import { cardClasses } from '@mui/material';
+import { cardClasses, IconButton } from '@mui/material';
 import game from '../interfaces/game';
+import { SwipeableDrawer } from '@mui/material';
+import { DeviceContext } from '../contexts/DeviceContext';
+import { ArrowForwardIosRounded, CasinoRounded } from '@mui/icons-material';
 
 const theme = createTheme({
   palette: {
@@ -42,6 +45,7 @@ const Library: FC = (props) => {
     youngPlayer: 0,
   });
   const user = useContext(AuthContext);
+  const device = useContext(DeviceContext)
 
   //updates state for games search and searches db for game matches
   const handleChange = (event) => {
@@ -137,19 +141,65 @@ const Library: FC = (props) => {
         return true;
       }
   });
-
+  const [userUpdateCount, setUserUpdateCount] = useState(0);
   useEffect(() => {
     if (user) {
       getLibrary();
+    } else {
+      if (userUpdateCount >= 1){
+        router.push('../login')
+      } else {
+        setTimeout(() => {
+          setUserUpdateCount((count) => count+1);
+        }, 500);
+      }
     }
-  }, [user]);
+  }, [user, userUpdateCount]);
+
+  type Anchor = 'top' | 'left' | 'bottom' | 'right';
+  const [drawer, setDrawer] = useState(false);
+  const toggleDrawer =
+  (anchor: Anchor, open: boolean) =>
+  (event: React.KeyboardEvent | React.MouseEvent) => {
+    if (
+      event &&
+      event.type === 'keydown' &&
+      ((event as React.KeyboardEvent).key === 'Tab' ||
+        (event as React.KeyboardEvent).key === 'Shift')
+    ) {
+      return;
+    }
+
+    setDrawer(open);
+  };
 
   return (
     <div id="library">
       <h1 className="libraryHeader">
         Library
       </h1>
-      <LibraryFilter filter={filter} setFilter={setFilter}/>
+      {device.isMobile ?
+        <div className='drawer' >
+        <Button
+        variant="outlined"
+        endIcon={<ArrowForwardIosRounded />}
+        onClick={toggleDrawer('left', true)}
+        color='inherit'
+        className='iconButton'
+        >
+          Filter Games
+        </Button>
+        <SwipeableDrawer
+          anchor={'left'}
+          open={drawer}
+          onClose={toggleDrawer('left', false)}
+          onOpen={toggleDrawer('left', true)}
+        >
+        <LibraryFilter filter={filter} setFilter={setFilter}/>
+        </SwipeableDrawer>
+        </div> :
+        <LibraryFilter filter={filter} setFilter={setFilter}/>
+      }
       <div className="gameList">
         {library.filter(applyFilters).map((game, index) => <GameCard
           key={game.id}
@@ -159,7 +209,7 @@ const Library: FC = (props) => {
         />)}
       </div>
       <div
-        className="addGame"
+        className={device.isMobile ? "addGame mobile" : "addGame"}
       >
         <Button
           variant="outlined"
@@ -175,13 +225,20 @@ const Library: FC = (props) => {
         onClose={handleClose}
       >
         <Box sx={modalBoxStyle}>
-          <div>
-            <h2>
+          <div id="game-search-modal">
+            <h2 className="search-header">
+              <span >
               Search for Game
+              </span>
+              <span>
+              <CasinoRounded />
+              </span>
             </h2>
             <form onSubmit={handleSearchSubmit}>
-              <input type="text" onChange={handleChange} />
-              <SearchRoundedIcon />
+              <input type="text" onChange={handleChange} placeholder="Enter Game Name"/>
+              <IconButton aria-label='search-games' type="submit">
+                <SearchRoundedIcon />
+              </IconButton>
             </form>
             <div className="searchResults">
               {search.results.map((game) => <GameCard

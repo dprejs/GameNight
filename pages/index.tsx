@@ -18,7 +18,7 @@ export default function Home() {
           Welcome to Game Night
         </h1>
 
-        <div className={styles.grid}>
+        {/* <div className={styles.grid}>
           <Link href="/library">
             <div className={styles.card}>
               <h2>Games</h2>
@@ -26,7 +26,7 @@ export default function Home() {
             </div>
           </Link>
 
-        </div>
+        </div> */}
         <div className={styles.grid}>
           <Link href="/login">
             <div className={styles.card}>
@@ -36,7 +36,7 @@ export default function Home() {
 
         </div>
       </main>
-
+{/*
       <footer className={styles.footer}>
         <a
           href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
@@ -48,7 +48,7 @@ export default function Home() {
             <Image src="/vercel.svg" alt="Vercel Logo" width={72} height={16} />
           </span>
         </a>
-      </footer>
+      </footer> */}
     </div>
   )
 }

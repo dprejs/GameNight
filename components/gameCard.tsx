@@ -33,6 +33,7 @@ const GameCard: FC<any> = (props) => {
   }
 
   const removeGameFromLibrary = () => {
+    console.log('delete')
     axios.delete(`/../api/library/removeGame/?uid=${user.uid}&game_id=${game.game_id}`)
     props.updateList();
     setInLibrary(false);

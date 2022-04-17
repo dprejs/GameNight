@@ -96,7 +96,9 @@ const LibraryFilter: FC<any> = ({ filter, setFilter }) => {
               min={0}
               max={480}
               step={10}
-              color="primary"
+              sx={{
+                color: 'black'
+              }}
               onChange={handleChange}
               aria-labelledby="input-slider"
             />
