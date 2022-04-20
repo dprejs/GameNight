@@ -6,8 +6,8 @@ export default function handler(req, res) {
   console.log('get library')
   if (req.method === 'GET') {
     if(req.query.uid) {
-      const { uid } = req.query;
-      getUserLibrary(uid)
+      const { uid, sortBy, order } = req.query;
+      getUserLibrary(uid, sortBy || 'name', order || 'ASC')
       .then((result) => {
         res.status(200).send(result.rows);
       })

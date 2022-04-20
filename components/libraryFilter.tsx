@@ -1,9 +1,13 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useContext, useState } from 'react';
 import { styled } from '@mui/material/styles';
 import Slider from '@mui/material/Slider';
 import Grid from '@mui/material/Grid';
 import MuiInput from '@mui/material/Input';
 import Button from '@mui/material/Button';
+import axios from 'axios';
+import { AuthContext } from '../contexts/AuthContext';
+import { KeyboardArrowDownRounded, KeyboardArrowUpRounded } from '@mui/icons-material';
+import { IconButton } from '@mui/material';
 
 const Input = styled(MuiInput)`
 width: 42px;
@@ -12,11 +16,11 @@ width: 42px;
 function valuetext(value: number) {
   return `${value} minutes`;
 }
-const LibraryFilter: FC<any> = ({ filter, setFilter }) => {
+const LibraryFilter: FC<any> = ({ filter, setFilter, setLibrary }) => {
   const [value, setValue] = React.useState<number | string | Array<number | string>>(
     480,
   );
-
+  const user = useContext(AuthContext);
   const handleChange = (event: Event, newValue: number | number[]) => {
     setFilter({
       ...filter,
@@ -56,6 +60,16 @@ const LibraryFilter: FC<any> = ({ filter, setFilter }) => {
       numPlayers: 0,
       gameLength: 480,
       youngPlayer: 0
+    })
+  }
+
+  const sortLibrary = (sortBy, order) => {
+    axios.get(`../api/library?uid=${user.uid}&sortBy=${sortBy}&order=${order}`).then((res) => {
+      setLibrary(res.data);
+      console.log(res);
+    })
+    .catch((err) => {
+      console.log(err);
     })
   }
 
@@ -138,6 +152,34 @@ const LibraryFilter: FC<any> = ({ filter, setFilter }) => {
       >
         Reset Filters
       </Button>
+      <div className="filterDivider" />
+      <h2 className="filterHeader">
+        Sort by
+      </h2>
+      <div className="filterDivider" />
+      <div>
+        Name <IconButton aria-label='name ASC'
+        onClick={() => sortLibrary('name', 'ASC')}
+        className="link"><KeyboardArrowUpRounded /></IconButton> | <IconButton aria-label='name DESC'
+        onClick={() => sortLibrary('name', 'DESC')}
+        className="link"><KeyboardArrowDownRounded /></IconButton>
+      </div>
+      <div className="filterDivider" />
+      <div>
+        Players <IconButton aria-label='players ASC'
+        onClick={() => sortLibrary('min_players', 'ASC')}
+        className="link"><KeyboardArrowUpRounded /></IconButton> | <IconButton aria-label='players DESC'
+        onClick={() => sortLibrary('max_players', 'DESC')}
+        className="link"><KeyboardArrowDownRounded /></IconButton>
+      </div>
+      <div className="filterDivider" />
+      <div>
+        PlayTime <IconButton aria-label='playtime ASC'
+        onClick={() => sortLibrary('min_playtime', 'ASC')}
+        className="link"><KeyboardArrowUpRounded /></IconButton> | <IconButton aria-label='playtime DESC'
+        onClick={() => sortLibrary('max_playtime', 'DESC')}
+        className="link"><KeyboardArrowDownRounded /></IconButton>
+      </div>
     </div>
   );
 };

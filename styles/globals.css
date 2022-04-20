@@ -40,13 +40,13 @@ a {
   cursor: pointer;
 }
 
-/* .iconButton {
-  margin-right: 5px;
-  background-color: var(--white);
-  color: black;
-  border: 1px solid black;
-  border-radius: 10px;
-} */
+.link {
+  text-decoration: underline;
+}
+
+.link:hover {
+  cursor: pointer;
+}
 
 .center {
   position: absolute;

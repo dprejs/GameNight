@@ -198,10 +198,10 @@ const Library: FC = (props) => {
           onClose={toggleDrawer('left', false)}
           onOpen={toggleDrawer('left', true)}
         >
-        <LibraryFilter filter={filter} setFilter={setFilter}/>
+        <LibraryFilter filter={filter} setFilter={setFilter} setLibrary={setLibrary}/>
         </SwipeableDrawer>
         </div> :
-        <LibraryFilter filter={filter} setFilter={setFilter}/>
+        <LibraryFilter filter={filter} setFilter={setFilter} setLibrary={setLibrary}/>
       }
       <div className="gameList">
         {library.filter(applyFilters).map((game, index) => <GameCard

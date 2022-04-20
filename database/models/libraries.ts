@@ -15,8 +15,8 @@ const libraries = {
     return db.query('DELETE FROM libraries WHERE game_id=$1 AND uid=$2', [gameId, uid])
   },
   //gets all games in user library
-  getUserLibrary: (uid: string): Promise<any> => {
-    return db.query('SELECT * FROM games INNER JOIN libraries ON games.id = libraries.game_id WHERE uid=$1 ORDER BY games.name ASC', [uid])
+  getUserLibrary: (uid: string, order: string = 'name', dir: string = 'ASC'): Promise<any> => {
+    return db.query(`SELECT * FROM games INNER JOIN libraries ON games.id = libraries.game_id WHERE uid=$1 ORDER BY games.${order} ${dir}`, [uid])
   }
 };
 
