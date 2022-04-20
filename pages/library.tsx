@@ -141,8 +141,11 @@ const Library: FC = (props) => {
         return true;
       }
   });
+
+  //gives time to load user from firebase if not logged in redirects to login page
   const [userUpdateCount, setUserUpdateCount] = useState(0);
   useEffect(() => {
+    // console.log(userUpdateCount)
     if (user) {
       getLibrary();
     } else {
@@ -151,7 +154,7 @@ const Library: FC = (props) => {
       } else {
         setTimeout(() => {
           setUserUpdateCount((count) => count+1);
-        }, 500);
+        }, 1000);
       }
     }
   }, [user, userUpdateCount]);

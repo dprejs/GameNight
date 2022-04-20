@@ -13,6 +13,8 @@ import modalBoxStyle from './modalStyle';
 import { AuthContext } from '../contexts/AuthContext';
 import SingleTime from './gamePlayers/singleTime';
 import TimeRange from './gamePlayers/timeRange';
+import Link from 'next/link';
+import { CloseRounded } from '@mui/icons-material';
 // import '../styles/gameCard.css';
 
 
@@ -34,7 +36,8 @@ const GameCard: FC<any> = (props) => {
 
   const removeGameFromLibrary = () => {
     console.log('delete')
-    axios.delete(`/../api/library/removeGame/?uid=${user.uid}&game_id=${game.game_id}`)
+    console.log('user:', user.uid, 'game', game.id)
+    axios.delete(`/../api/library/removeGame/?uid=${user.uid}&game_id=${game.id}`)
     props.updateList();
     setInLibrary(false);
   }
@@ -70,11 +73,11 @@ const GameCard: FC<any> = (props) => {
       </div>
       <div className="cardDivider" />
       {oneGameTime ? <SingleTime
-            min_playtime={game.min_playtime}
-          /> : <TimeRange
-          min_playtime={game.min_playtime}
-          max_playtime={game.max_playtime}
-        />}
+        min_playtime={game.min_playtime}
+      /> : <TimeRange
+        min_playtime={game.min_playtime}
+        max_playtime={game.max_playtime}
+      />}
       <div className="gameAge">
         Ages {game.min_age}+
       </div>
@@ -83,7 +86,7 @@ const GameCard: FC<any> = (props) => {
       </div>
       <Button
         variant="outlined"
-        className="detailButton"
+        className="detailButton cardButton"
         onClick={handleOpen}
         color="inherit"
       >
@@ -91,12 +94,12 @@ const GameCard: FC<any> = (props) => {
       </Button>
       {inLibrary ? <Button
         variant="outlined"
-        className="addToLibrary"
+        className="addToLibrary cardButton"
         onClick={removeGameFromLibrary}
         color="inherit"
       >Remove Game</Button> : <Button
         variant="outlined"
-        className="addToLibrary"
+        className="addToLibrary cardButton"
         onClick={addGameToLibrary}
         color="inherit"
       >
@@ -107,11 +110,29 @@ const GameCard: FC<any> = (props) => {
         onClose={handleClose}
       >
         <Box sx={modalBoxStyle}>
-          <div>
-            Published {game.year_published}
-          </div>
-          <div>
-            {parse(game.description)}
+          <div className="game-details">
+            <span className="details-banner">
+              <h2>
+                {game.name}
+              </h2>
+              <IconButton aria-label="close details" onClick={handleClose}>
+                <CloseRounded />
+              </IconButton>
+            </span>
+            <div className="year-published">
+              Published {game.year_published}
+            </div>
+            <span className="game-links">
+              <a href={game.official_url} target="_blank">
+                Official Game Website
+              </a>
+              <a href={game.rules_url} target="_blank">
+                Game Rule Book
+              </a>
+            </span>
+            <div className="game-description">
+              {parse(game.description)}
+            </div>
           </div>
         </Box>
       </Modal>

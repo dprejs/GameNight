@@ -2,17 +2,20 @@
 import '../styles/globals.css';
 import '../styles/library.css';
 import '../styles/login.css';
-import React from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import MenuRoundedIcon from '@mui/icons-material/MenuRounded';
 import Tooltip from '@mui/material/Tooltip';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
-import { IconButton } from '@mui/material';
+import { Button, IconButton } from '@mui/material';
 import Link from 'next/link';
-import { signOut } from 'firebase/auth';
-import { AuthProvider } from '../contexts/AuthContext';
+import { onAuthStateChanged, signOut } from 'firebase/auth';
+import { AuthContext, AuthProvider } from '../contexts/AuthContext';
 import DeviceContextProvider from '../contexts/DeviceContext';
 import { auth } from '../components/firebase';
+import { LogoutRounded } from '@mui/icons-material';
+import { useRouter } from 'next/router';
+import Head from 'next/head';
 
 function MyApp({ Component, pageProps }) {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -29,12 +32,34 @@ function MyApp({ Component, pageProps }) {
       .catch(error => console.log(error));
   }
 
+  const router = useRouter();
+  const [loggedIn, setLoggedIn] = useState(false);
+
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      setLoggedIn(true);
+    } else {
+      setLoggedIn(false);
+    }
+  });
+
   return (
     <DeviceContextProvider>
       <AuthProvider>
+        <Head>
+          <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+          <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+          <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+          <link rel="manifest" href="/site.webmanifest" />
+          <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5" />
+          <meta name="theme-color" content="#ffffff" />
+        </Head>
         <div className="banner">
-          <h1>Game Night</h1>
-          <Tooltip title="open menu">
+          <Link href='/'>
+            <h1 className="Title">Game Night</h1>
+          </Link>
+
+          {loggedIn ? <><Tooltip title="open menu">
             <IconButton
               onClick={handleClick}
               color="inherit"
@@ -42,32 +67,26 @@ function MyApp({ Component, pageProps }) {
               <MenuRoundedIcon />
             </IconButton>
           </Tooltip>
-          <Menu
-            anchorEl={anchorEl}
-            id="account-menu"
-            open={open}
-            onClose={handleClose}
-            onClick={handleClose}
-          >
-            <MenuItem>
-              <Link href="/library">
+            <Menu
+              anchorEl={anchorEl}
+              id="account-menu"
+              open={open}
+              onClose={handleClose}
+              onClick={handleClose}
+            >
+              <MenuItem onClick={() => router.push('/library')}>
                 Library
-              </Link>
-            </MenuItem>
-            <MenuItem>
-              Profile
-            </MenuItem>
-            <MenuItem>
-              <Link href="/">
+              </MenuItem>
+              <MenuItem onClick={() => router.push('/profile')}>
+                Profile
+              </MenuItem>
+              <MenuItem onClick={() => router.push('/')}>
                 Home
-              </Link>
-            </MenuItem>
-            <MenuItem>
-              <button type="button" onClick={logout}>
-                logout
-              </button>
-            </MenuItem>
-          </Menu>
+              </MenuItem>
+              <MenuItem onClick={logout}>
+                Logout <LogoutRounded />
+              </MenuItem>
+            </Menu></> : null}
         </div>
         <Component {...pageProps} />
       </AuthProvider>
