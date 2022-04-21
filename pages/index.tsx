@@ -16,7 +16,7 @@ export default function Home() {
   return (
     <div className={styles.container} style={backgroundStyle}>
       <Head>
-        <title>Game Night</title>
+        <title>My Game Shelf</title>
         <meta name="description" />
         <link rel="icon" href="/favicon.ico" />
       </Head>

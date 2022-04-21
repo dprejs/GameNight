@@ -20,6 +20,14 @@ const Profile: FC = () => {
     width: 150,
     height: 150,
   }
+  const buttonStyle = {
+    marginRight: '5px',
+    backgroundColor: 'var(--white)',
+    color: 'black',
+    border: '1px solid black',
+    borderRadius: '10px',
+    fontSize: 'small',
+  }
   if(device.isMobile) {
     styles = mobile;
   } else {
@@ -39,7 +47,6 @@ const Profile: FC = () => {
   const [userUpdateCount, setUserUpdateCount] = useState(0);
   useEffect(() => {
     if(!user) {
-      console.log(userUpdateCount)
       if (userUpdateCount >= 1) {
         router.push('../login')
       } else {
@@ -52,7 +59,6 @@ const Profile: FC = () => {
 
   const logout = () => {
     signOut(auth)
-    .then(() => console.log('signed out'))
     .catch(error => console.log(error));
   }
 
@@ -80,6 +86,7 @@ const Profile: FC = () => {
         </div>
         <Button
         className="iconButton"
+        style={buttonStyle}
         onClick={logout}
         endIcon={<LogoutRounded />}
         >

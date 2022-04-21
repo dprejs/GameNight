@@ -11,7 +11,6 @@ import LibraryFilter from '../components/libraryFilter';
 import modalBoxStyle from '../components/modalStyle';
 import { AuthContext } from '../contexts/AuthContext';
 import { useRouter } from 'next/router';
-import GameList from '../components/GameList';
 import { cardClasses, IconButton } from '@mui/material';
 import game from '../interfaces/game';
 import { SwipeableDrawer } from '@mui/material';
@@ -82,7 +81,6 @@ const Library: FC = (props) => {
           ...search,
           results: res.data.games,
         });
-        console.log(res.data.games);
       })
       .catch((err) => {
         console.log('error getting search results', err);
@@ -92,7 +90,6 @@ const Library: FC = (props) => {
   const getLibrary = () => {
     axios.get(`/../api/library/?uid=${user.uid}`)
       .then((res) => {
-        console.log(res.data)
         setLibrary(res.data);
       })
       .catch((err) => {
@@ -145,7 +142,6 @@ const Library: FC = (props) => {
   //gives time to load user from firebase if not logged in redirects to login page
   const [userUpdateCount, setUserUpdateCount] = useState(0);
   useEffect(() => {
-    // console.log(userUpdateCount)
     if (user) {
       getLibrary();
     } else {

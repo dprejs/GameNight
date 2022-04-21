@@ -66,7 +66,6 @@ const LibraryFilter: FC<any> = ({ filter, setFilter, setLibrary }) => {
   const sortLibrary = (sortBy, order) => {
     axios.get(`../api/library?uid=${user.uid}&sortBy=${sortBy}&order=${order}`).then((res) => {
       setLibrary(res.data);
-      console.log(res);
     })
     .catch((err) => {
       console.log(err);

@@ -117,7 +117,6 @@ const LoginPage: FC = () => {
   };
 
   const googleSignInApiCall = (user) => {
-    console.log(user);
     axios.post('/../api/login/googleSignIn', user)
     .catch((err) => {
       console.log('error checking user', err);

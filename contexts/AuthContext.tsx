@@ -25,7 +25,6 @@ export const AuthProvider = ({ children }) => {
   const value = useMemo(() => ({ currentUser, signUp }), []);
 
   onAuthStateChanged(auth, (user) => {
-    // console.log('auth state change', user);
     setCurrentUser(user);
   });
 

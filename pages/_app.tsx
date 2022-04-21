@@ -28,7 +28,6 @@ function MyApp({ Component, pageProps }) {
   };
   const logout = () => {
     signOut(auth)
-      .then(() => console.log('signed out'))
       .catch(error => console.log(error));
   }
 

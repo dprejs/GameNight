@@ -5,7 +5,6 @@ export default function handler(req, res) {
   if (req.method === 'GET') {
     if (req.query.search) {
       const { search } = req.query;
-      console.log(search);
         searchGames(search)
         .then((result) => {
           res.status(200).send(result.rows)
