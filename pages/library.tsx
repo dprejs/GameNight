@@ -16,7 +16,7 @@ import { cardClasses, IconButton } from '@mui/material';
 import game from '../interfaces/game';
 import { SwipeableDrawer } from '@mui/material';
 import { DeviceContext } from '../contexts/DeviceContext';
-import { ArrowForwardIosRounded, CasinoRounded } from '@mui/icons-material';
+import { ArrowForwardIosRounded, CasinoRounded, CloseRounded } from '@mui/icons-material';
 
 const theme = createTheme({
   palette: {
@@ -76,7 +76,7 @@ const Library: FC = (props) => {
   //searches third party api for games on form submit
   const handleSearchSubmit = (event) => {
     event.preventDefault();
-    axios.get(`https://api.boardgameatlas.com/api/search?name=${search.input}&client_id=hXGvhv0QR7`)
+    axios.get(`https://api.boardgameatlas.com/api/search?name=${search.input}&client_id=${process.env.NEXT_PUBLIC_CLIENT_ID}`)
       .then((res) => {
         setSearch({
           ...search,
@@ -100,7 +100,7 @@ const Library: FC = (props) => {
       })
   }
 
-  const addGameToList = (game:game) => {
+  const addGameToList = (game: game) => {
     setLibrary([...library, game]);
   }
   //remove game by clicking card in library
@@ -120,26 +120,26 @@ const Library: FC = (props) => {
     return regex.test(name);
   };
 
-  const playersFilter = ({max_players, min_players}: game): boolean => max_players >= filter.numPlayers && min_players <= filter.numPlayers;
+  const playersFilter = ({ max_players, min_players }: game): boolean => max_players >= filter.numPlayers && min_players <= filter.numPlayers;
 
-  const lengthFilter = ({min_playtime}: game): boolean => {
+  const lengthFilter = ({ min_playtime }: game): boolean => {
     return min_playtime <= filter.gameLength;
   }
 
-  const ageFilter = ({min_age}: game): boolean => min_age <= filter.youngPlayer;
+  const ageFilter = ({ min_age }: game): boolean => min_age <= filter.youngPlayer;
 
   const applyFilters = ((game: game): boolean => {
-      if (filter.search.length > 1 && !searchFilter(game)) {
-        return false;
-      } else if (filter.numPlayers && !playersFilter(game)) {
-        return false;
-      } else if (filter.gameLength < 480 && !lengthFilter(game)) {
-        return false;
-      } else if (filter.youngPlayer && !ageFilter(game)){
-        return false;
-      } else {
-        return true;
-      }
+    if (filter.search.length > 1 && !searchFilter(game)) {
+      return false;
+    } else if (filter.numPlayers && !playersFilter(game)) {
+      return false;
+    } else if (filter.gameLength < 480 && !lengthFilter(game)) {
+      return false;
+    } else if (filter.youngPlayer && !ageFilter(game)) {
+      return false;
+    } else {
+      return true;
+    }
   });
 
   //gives time to load user from firebase if not logged in redirects to login page
@@ -149,11 +149,11 @@ const Library: FC = (props) => {
     if (user) {
       getLibrary();
     } else {
-      if (userUpdateCount >= 1){
+      if (userUpdateCount >= 1) {
         router.push('../login')
       } else {
         setTimeout(() => {
-          setUserUpdateCount((count) => count+1);
+          setUserUpdateCount((count) => count + 1);
         }, 1000);
       }
     }
@@ -162,19 +162,19 @@ const Library: FC = (props) => {
   type Anchor = 'top' | 'left' | 'bottom' | 'right';
   const [drawer, setDrawer] = useState(false);
   const toggleDrawer =
-  (anchor: Anchor, open: boolean) =>
-  (event: React.KeyboardEvent | React.MouseEvent) => {
-    if (
-      event &&
-      event.type === 'keydown' &&
-      ((event as React.KeyboardEvent).key === 'Tab' ||
-        (event as React.KeyboardEvent).key === 'Shift')
-    ) {
-      return;
-    }
+    (anchor: Anchor, open: boolean) =>
+      (event: React.KeyboardEvent | React.MouseEvent) => {
+        if (
+          event &&
+          event.type === 'keydown' &&
+          ((event as React.KeyboardEvent).key === 'Tab' ||
+            (event as React.KeyboardEvent).key === 'Shift')
+        ) {
+          return;
+        }
 
-    setDrawer(open);
-  };
+        setDrawer(open);
+      };
 
   return (
     <div id="library">
@@ -183,25 +183,25 @@ const Library: FC = (props) => {
       </h1>
       {device.isMobile ?
         <div className='drawer' >
-        <Button
-        variant="outlined"
-        endIcon={<ArrowForwardIosRounded />}
-        onClick={toggleDrawer('left', true)}
-        color='inherit'
-        className='iconButton'
-        >
-          Filter Games
-        </Button>
-        <SwipeableDrawer
-          anchor={'left'}
-          open={drawer}
-          onClose={toggleDrawer('left', false)}
-          onOpen={toggleDrawer('left', true)}
-        >
-        <LibraryFilter filter={filter} setFilter={setFilter} setLibrary={setLibrary}/>
-        </SwipeableDrawer>
+          <Button
+            variant="outlined"
+            endIcon={<ArrowForwardIosRounded />}
+            onClick={toggleDrawer('left', true)}
+            color='inherit'
+            className='iconButton'
+          >
+            Filter Games
+          </Button>
+          <SwipeableDrawer
+            anchor={'left'}
+            open={drawer}
+            onClose={toggleDrawer('left', false)}
+            onOpen={toggleDrawer('left', true)}
+          >
+            <LibraryFilter filter={filter} setFilter={setFilter} setLibrary={setLibrary} />
+          </SwipeableDrawer>
         </div> :
-        <LibraryFilter filter={filter} setFilter={setFilter} setLibrary={setLibrary}/>
+        <LibraryFilter filter={filter} setFilter={setFilter} setLibrary={setLibrary} />
       }
       <div className="gameList">
         {library.filter(applyFilters).map((game, index) => <GameCard
@@ -229,16 +229,28 @@ const Library: FC = (props) => {
       >
         <Box sx={modalBoxStyle}>
           <div id="game-search-modal">
+            <IconButton
+              className='upperRight'
+              aria-label='close game search modal'
+              onClick={handleClose}>
+              <CloseRounded />
+            </IconButton>
             <h2 className="search-header">
               <span >
-              Search for Game
+                Search for Game
               </span>
               <span>
-              <CasinoRounded />
+                <CasinoRounded />
               </span>
             </h2>
             <form onSubmit={handleSearchSubmit}>
-              <input type="text" onChange={handleChange} placeholder="Enter Game Name"/>
+              <input type="text"
+              onChange={handleChange}
+              placeholder="Enter Game Name"
+              style={{
+                fontSize: 'larger',
+                marginBottom: '15px'
+              }}/>
               <IconButton aria-label='search-games' type="submit">
                 <SearchRoundedIcon />
               </IconButton>

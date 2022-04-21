@@ -1,8 +1,6 @@
 import { Client } from 'pg';
 const db = new Client({
   database: 'gamenight',
-  user: 'dprejs',
-  password: 'ultimate7000',
 });
 console.log('connecting to db')
 db.connect((err) => {

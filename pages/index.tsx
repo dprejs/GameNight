@@ -23,13 +23,13 @@ export default function Home() {
 
       <main className={styles.main}>
         <h1 className={styles.title}>
-          Welcome to Game Night!
+          Welcome to My Game Shelf!
         </h1>
         {user ? <><div className={styles.grid}>
           <Link href="/library">
             <div className={styles.card}>
-              <h2>Library</h2>
-              <p>My games</p>
+              <h2>The Shelf</h2>
+              <p>See all of your games</p>
             </div>
           </Link>
         </div>

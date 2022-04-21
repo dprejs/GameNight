@@ -123,10 +123,10 @@ const GameCard: FC<any> = (props) => {
               Published {game.year_published}
             </div>
             <span className="game-links">
-              <a href={game.official_url} target="_blank">
+              <a className="link" href={game.official_url} target="_blank">
                 Official Game Website
               </a>
-              <a href={game.rules_url} target="_blank">
+              <a className="link" href={game.rules_url} target="_blank">
                 Game Rule Book
               </a>
             </span>

@@ -56,7 +56,7 @@ function MyApp({ Component, pageProps }) {
         </Head>
         <div className="banner">
           <Link href='/'>
-            <h1 className="Title">Game Night</h1>
+            <h1 className="Title">My Game Shelf</h1>
           </Link>
 
           {loggedIn ? <><Tooltip title="open menu">
