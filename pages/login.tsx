@@ -16,12 +16,15 @@ import { useAuth } from '../contexts/AuthContext';
 import { DeviceContext } from '../contexts/DeviceContext';
 import axios from 'axios';
 import { Router, useRouter } from 'next/router';
+import styles from '../styles/login/login.module.css';
 
 interface TabPanelProps {
   children?: React.ReactNode;
   index: number;
   value: number;
 }
+
+
 
 const provider = new GoogleAuthProvider();
 
@@ -63,7 +66,24 @@ const LoginPage: FC = () => {
   })
   const device = useContext(DeviceContext);
   const router = useRouter();
-
+  const googleStyleParams = {
+    margin: '10px',
+    display: 'inline-block',
+    width: '240px',
+    height: '50px',
+    backgroundColor: '#4285f4',
+    color: '#fff',
+    borderRadius: '1px',
+    boxShadow: '0 2px 4px 0 rgba(0, 0, 0, 0.25)',
+    transition: 'background-color .218s, border-color .218s, box-shadow .218s',
+    // display: 'inline-block',
+    // background: 'white',
+    // color: '#444',
+    // width: '190px',
+    // borderRadius: '5px',
+    // border: 'thin solid #888',
+    // boxShadow: '1px 1px 1px grey',
+  };
 
   const handleChange = (event, newValue) => {
     event.preventDefault();
@@ -94,13 +114,13 @@ const LoginPage: FC = () => {
         updateProfile(auth.currentUser, {
           displayName: signUp.username,
         })
-        .catch((err) => {
-          console.log('error updating username', err);
-        })
-        axios.post('/../api/login/createUser', {...user, username: signUp.username})
-        .catch((err) => {
-          console.log('error creating user', err);
-        })
+          .catch((err) => {
+            console.log('error updating username', err);
+          })
+        axios.post('/../api/login/createUser', { ...user, username: signUp.username })
+          .catch((err) => {
+            console.log('error creating user', err);
+          })
       })
       .catch((err) => console.log(err.message));
   };
@@ -108,24 +128,24 @@ const LoginPage: FC = () => {
   const signInSubmit = (event) => {
     event.preventDefault();
     signInWithEmailAndPassword(auth, signIn.email, signIn.password)
-    .then(() => {
-      router.push('/../library')
-    })
-    .catch((error) => {
-      console.log(error);
-    })
+      .then(() => {
+        router.push('/../library')
+      })
+      .catch((error) => {
+        console.log(error);
+      })
   };
 
   const googleSignInApiCall = (user) => {
     axios.post('/../api/login/googleSignIn', user)
-    .catch((err) => {
-      console.log('error checking user', err);
-    })
+      .catch((err) => {
+        console.log('error checking user', err);
+      })
   }
 
   const googleSignIn = (event) => {
     //login with redirect in mobile browsers
-    if(device.isMobile || device.isTablet) {
+    if (device.isMobile || device.isTablet) {
       signInWithRedirect(auth, provider)
         .then((result) => {
           const credential = GoogleAuthProvider.credentialFromResult(result);
@@ -142,7 +162,7 @@ const LoginPage: FC = () => {
           console.log(errorCode, errorMessage);
         });
     } else {
-    //login with popup for desktop
+      //login with popup for desktop
       signInWithPopup(auth, provider)
         .then((result) => {
           const credential = GoogleAuthProvider.credentialFromResult(result);
@@ -201,7 +221,16 @@ const LoginPage: FC = () => {
                 onChange={signInHandleChange}
               />
               <button type="submit">Login</button>
-              <button type="button" onClick={googleSignIn}>sign in with google</button>
+              <div onClick={googleSignIn} className={styles.gSignInButton}>
+                <div className={styles.contentWrapper}>
+                  <div className={styles.logoWrapper}>
+                    <img src='https://developers.google.com/identity/images/g-logo.png' />
+                  </div>
+                  <span className={styles.textContainer}>
+                    <span>Sign in with Google</span>
+                  </span>
+                </div>
+              </div>
             </form>
           </TabPanel>
           <TabPanel value={tabValue} index={1}>
@@ -255,7 +284,7 @@ const LoginPage: FC = () => {
                 ref={passwordConfirmRef}
                 name="passwordConfirm"
                 id="signUpPasswordConfirm"
-                placeholder="confirmPassworda"
+                placeholder="confirmPassword"
                 value={signUp.passwordConfirm}
                 onChange={signUpHandleChange}
                 required

@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import '../styles/globals.css';
 import '../styles/library.css';
-import '../styles/login.css';
+import '../styles/login/login.css';
 import React, { useContext, useEffect, useState } from 'react';
 import MenuRoundedIcon from '@mui/icons-material/MenuRounded';
 import Tooltip from '@mui/material/Tooltip';
