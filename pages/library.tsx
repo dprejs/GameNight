@@ -207,18 +207,14 @@ const Library: FC = (props) => {
           updateList={() => removeGameByIndex(index)}
         />)}
       </div>
-      <div
-        className={device.isMobile ? "addGame mobile" : "addGame"}
-      >
         <Button
           variant="outlined"
-          onClick={handleOpen}
+          onClick={handleOpen} className={device.isMobile ? "addGame mobile" : "addGame"}
           endIcon={<AddCircleOutlineRoundedIcon />}
           color="inherit"
         >
           Add Game
         </Button>
-      </div>
       <Modal
         open={open}
         onClose={handleClose}

@@ -220,7 +220,7 @@ const LoginPage: FC = () => {
                 required
                 onChange={signInHandleChange}
               />
-              <button type="submit">Login</button>
+              <button className={styles.button} type="submit">Login</button>
               <div onClick={googleSignIn} className={styles.gSignInButton}>
                 <div className={styles.contentWrapper}>
                   <div className={styles.logoWrapper}>
@@ -289,7 +289,7 @@ const LoginPage: FC = () => {
                 onChange={signUpHandleChange}
                 required
               />
-              <button type="submit">
+              <button className={styles.button} type="submit">
                 submit
               </button>
 
