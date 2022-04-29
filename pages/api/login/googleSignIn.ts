@@ -2,6 +2,7 @@ import users from "../../../database/models/users";
 
 const {addUser, getUser} = users;
 export default function handler(req, res) {
+  console.log('heard')
   if (req.method === 'POST') {
     const data = req.body;
     if(data.uid, data.displayName) {

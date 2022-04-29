@@ -1,4 +1,4 @@
-import React, { FC, useState, useRef, useContext } from 'react';
+import React, { FC, useState, useRef, useContext, useEffect } from 'react';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
@@ -12,7 +12,7 @@ import {
   updateProfile,
 } from 'firebase/auth';
 import { auth } from '../components/firebase';
-import { useAuth } from '../contexts/AuthContext';
+import { AuthContext } from '../contexts/AuthContext';
 import { DeviceContext } from '../contexts/DeviceContext';
 import axios from 'axios';
 import { Router, useRouter } from 'next/router';
@@ -64,6 +64,7 @@ const LoginPage: FC = () => {
     email: '',
     password: '',
   })
+  const user = useContext(AuthContext);
   const device = useContext(DeviceContext);
   const router = useRouter();
   const googleStyleParams = {
@@ -143,17 +144,16 @@ const LoginPage: FC = () => {
       })
   }
 
+  useEffect(() => {
+    if (user) {
+      router.push('/../library');
+    }
+  }, [user]);
+
   const googleSignIn = (event) => {
     //login with redirect in mobile browsers
     if (device.isMobile || device.isTablet) {
       signInWithRedirect(auth, provider)
-        .then((result) => {
-          const credential = GoogleAuthProvider.credentialFromResult(result);
-          const token = credential.accessToken;
-          const { user } = result;
-          googleSignInApiCall(user);
-          router.push('/../library')
-        })
         .catch((error) => {
           const errorCode = error.code;
           const errorMessage = error.message;
