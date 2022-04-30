@@ -26,7 +26,7 @@ export default function Home() {
           Welcome to My Game Shelf!
         </h1>
         {user ? <><div className={styles.grid}>
-          <Link href="/library">
+          <Link href={`/library/${user.uid}`}>
             <div className={styles.card}>
               <h2>The Shelf</h2>
               <p>See all of your games</p>

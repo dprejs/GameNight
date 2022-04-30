@@ -28,6 +28,9 @@ function MyApp({ Component, pageProps }) {
   };
   const logout = () => {
     signOut(auth)
+      .then(() => {
+        router.push('/')
+      })
       .catch(error => console.log(error));
   }
 

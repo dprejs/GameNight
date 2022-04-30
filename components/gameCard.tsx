@@ -1,8 +1,5 @@
 import React, { FC, useContext, useEffect, useState } from 'react';
 import Image from 'next/image';
-import FavoriteBorderRoundedIcon from '@mui/icons-material/FavoriteBorderRounded';
-import FavoriteRoundedIcon from '@mui/icons-material/FavoriteRounded';
-// import Divider from '@mui/material/Divider';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import parse from 'html-react-parser';
@@ -13,14 +10,13 @@ import modalBoxStyle from './modalStyle';
 import { AuthContext } from '../contexts/AuthContext';
 import SingleTime from './gamePlayers/singleTime';
 import TimeRange from './gamePlayers/timeRange';
-import Link from 'next/link';
 import { CloseRounded } from '@mui/icons-material';
-import gstyles from '../styles/global.module.css';
+import GameCardButton from './gameCardButtons';
 
 
 
 const GameCard: FC<any> = (props) => {
-  const { game } = props;
+  const { game, isLibraryOwner } = props;
   const [isFavorite, setFavorite] = useState(false);
   const [open, setOpen] = useState(false);
   const [inLibrary, setInLibrary] = useState(props.inLibrary)
@@ -101,21 +97,15 @@ return (
     >
       More Details
     </Button>
-    {inLibrary ? <Button
-      variant="outlined"
-      className="addToLibrary"
-      style={cardStyle}
-      onClick={removeGameFromLibrary}
-      color="inherit"
-    >Remove Game</Button> : <Button
-      variant="outlined"
-      className="addToLibrary"
-      style={cardStyle}
-      onClick={addGameToLibrary}
-      color="inherit"
-    >
-      Add To Library
-    </Button>}
+    {isLibraryOwner ?
+    <GameCardButton
+      inLibrary={inLibrary}
+      cardStyle={cardStyle}
+      removeGameFromLibrary={removeGameFromLibrary}
+      addGameToLibrary={addGameToLibrary}
+      /> :
+      null
+    }
     <Modal
       open={open}
       onClose={handleClose}

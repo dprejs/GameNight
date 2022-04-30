@@ -6,15 +6,15 @@ import Button from '@mui/material/Button';
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
 import AddCircleOutlineRoundedIcon from '@mui/icons-material/AddCircleOutlineRounded';
 import { createTheme } from '@mui/material/styles';
-import GameCard from '../components/gameCard';
-import LibraryFilter from '../components/libraryFilter';
-import modalBoxStyle from '../components/modalStyle';
-import { AuthContext } from '../contexts/AuthContext';
+import GameCard from '../../components/gameCard';
+import LibraryFilter from '../../components/libraryFilter';
+import modalBoxStyle from '../../components/modalStyle';
+import { AuthContext } from '../../contexts/AuthContext';
 import { useRouter } from 'next/router';
-import { cardClasses, IconButton } from '@mui/material';
-import game from '../interfaces/game';
+import { IconButton } from '@mui/material';
+import game from '../../interfaces/game';
 import { SwipeableDrawer } from '@mui/material';
-import { DeviceContext } from '../contexts/DeviceContext';
+import { DeviceContext } from '../../contexts/DeviceContext';
 import { ArrowForwardIosRounded, CasinoRounded, CloseRounded } from '@mui/icons-material';
 
 const theme = createTheme({
@@ -26,6 +26,14 @@ const theme = createTheme({
     },
   },
 });
+
+const buttonStyle = {
+  backgroundColor: 'var(--white)',
+  color: 'black',
+  border: '1px solid black',
+  borderRadius: '10px',
+  fontSize: 'small',
+}
 
 const Library: FC = (props) => {
   const router = useRouter();
@@ -45,6 +53,16 @@ const Library: FC = (props) => {
   });
   const user = useContext(AuthContext);
   const device = useContext(DeviceContext)
+
+  // gets uid from url and checks if user owns the library.
+  const { uid } = router.query;
+  const [isLibraryOwner, setIsLibraryOwner] = useState(false);
+  useEffect(() => {
+    if (user && user.uid === uid) {
+      setIsLibraryOwner(true);
+    }
+  }, [uid, user]);
+
 
   //updates state for games search and searches db for game matches
   const handleChange = (event) => {
@@ -146,7 +164,8 @@ const Library: FC = (props) => {
       getLibrary();
     } else {
       if (userUpdateCount >= 1) {
-        router.push('../login')
+        setIsLibraryOwner(false);
+        // router.push('../login')
       } else {
         setTimeout(() => {
           setUserUpdateCount((count) => count + 1);
@@ -185,6 +204,7 @@ const Library: FC = (props) => {
             onClick={toggleDrawer('left', true)}
             color='inherit'
             className='iconButton'
+            style={buttonStyle}
           >
             Filter Games
           </Button>
@@ -205,16 +225,21 @@ const Library: FC = (props) => {
           inLibrary={library.some(i => i.id === game.id)}
           game={game}
           updateList={() => removeGameByIndex(index)}
+          isLibraryOwner={isLibraryOwner}
         />)}
       </div>
-        <Button
-          variant="outlined"
-          onClick={handleOpen} className={device.isMobile ? "addGame mobile" : "addGame"}
-          endIcon={<AddCircleOutlineRoundedIcon />}
-          color="inherit"
-        >
-          Add Game
-        </Button>
+      {isLibraryOwner ?
+      <Button
+        variant="outlined"
+        onClick={handleOpen} className={device.isMobile ? "addGame mobile" : "addGame"}
+        endIcon={<AddCircleOutlineRoundedIcon />}
+        color="inherit"
+        style={{ ...buttonStyle, marginRight: '5px' }}
+      >
+        Add Game
+      </Button>
+      : null
+    }
       <Modal
         open={open}
         onClose={handleClose}
@@ -237,12 +262,12 @@ const Library: FC = (props) => {
             </h2>
             <form onSubmit={handleSearchSubmit}>
               <input type="text"
-              onChange={handleChange}
-              placeholder="Enter Game Name"
-              style={{
-                fontSize: 'larger',
-                marginBottom: '15px'
-              }}/>
+                onChange={handleChange}
+                placeholder="Enter Game Name"
+                style={{
+                  fontSize: 'larger',
+                  marginBottom: '15px'
+                }} />
               <IconButton aria-label='search-games' type="submit">
                 <SearchRoundedIcon />
               </IconButton>

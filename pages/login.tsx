@@ -2,7 +2,6 @@ import React, { FC, useState, useRef, useContext, useEffect } from 'react';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
-import firebaseui from 'firebaseui';
 import {
   createUserWithEmailAndPassword,
   signInWithPopup,
@@ -15,7 +14,7 @@ import { auth } from '../components/firebase';
 import { AuthContext } from '../contexts/AuthContext';
 import { DeviceContext } from '../contexts/DeviceContext';
 import axios from 'axios';
-import { Router, useRouter } from 'next/router';
+import { useRouter } from 'next/router';
 import styles from '../styles/login/login.module.css';
 
 interface TabPanelProps {
@@ -129,9 +128,6 @@ const LoginPage: FC = () => {
   const signInSubmit = (event) => {
     event.preventDefault();
     signInWithEmailAndPassword(auth, signIn.email, signIn.password)
-      .then(() => {
-        router.push('/../library')
-      })
       .catch((error) => {
         console.log(error);
       })
@@ -146,7 +142,7 @@ const LoginPage: FC = () => {
 
   useEffect(() => {
     if (user) {
-      router.push('/../library');
+      router.push(`/../library/${user.uid}`);
     }
   }, [user]);
 
@@ -169,7 +165,6 @@ const LoginPage: FC = () => {
           const token = credential.accessToken;
           const { user } = result;
           googleSignInApiCall(user);
-          router.push('/../library')
         })
         .catch((error) => {
           const errorCode = error.code;
