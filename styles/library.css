@@ -8,6 +8,7 @@
   bottom: 0;
   height: calc(100vh - 70px);
   overflow-y: hidden;
+  padding-bottom: 15px;
 }
 
 .gameList {
