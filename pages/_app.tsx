@@ -7,15 +7,16 @@ import MenuRoundedIcon from '@mui/icons-material/MenuRounded';
 import Tooltip from '@mui/material/Tooltip';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
-import { Button, IconButton } from '@mui/material';
+import { Alert, Button, IconButton } from '@mui/material';
 import Link from 'next/link';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { AuthContext, AuthProvider } from '../contexts/AuthContext';
 import DeviceContextProvider from '../contexts/DeviceContext';
 import { auth } from '../components/firebase';
-import { LogoutRounded } from '@mui/icons-material';
+import { LogoutRounded, ShareRounded } from '@mui/icons-material';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
+import User from '../interfaces/User';
 
 function MyApp({ Component, pageProps }) {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -36,12 +37,16 @@ function MyApp({ Component, pageProps }) {
 
   const router = useRouter();
   const [loggedIn, setLoggedIn] = useState(false);
+  const [user, setUser] = useState<any>();
+  const [copyAlert, setCopyAlert] = useState(false);
 
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
+  onAuthStateChanged(auth, (u) => {
+    if (u) {
       setLoggedIn(true);
+      setUser(u);
     } else {
       setLoggedIn(false);
+      setUser(undefined);
     }
   });
 
@@ -88,8 +93,25 @@ function MyApp({ Component, pageProps }) {
               <MenuItem onClick={logout}>
                 Logout <LogoutRounded />
               </MenuItem>
+              <MenuItem onClick={() => {
+                if (user) {
+                  navigator.clipboard.writeText(`http://52.53.160.213/library/${user.uid}`);
+                  setCopyAlert(true);
+                  setTimeout(() => setCopyAlert(false), 15000);
+                }
+              }}>
+                Share Library <ShareRounded />
+              </MenuItem>
             </Menu></> : null}
         </div>
+        {copyAlert ?
+        <Alert
+          onClose={() => setCopyAlert(false)}
+        >
+          Library Share Link Copied To Clipboard
+        </Alert> :
+        null
+        }
         <Component {...pageProps} />
       </AuthProvider>
     </DeviceContextProvider>

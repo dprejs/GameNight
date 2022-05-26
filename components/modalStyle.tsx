@@ -8,6 +8,7 @@ const modalBoxStyle = {
   border: '2px solid #000',
   boxShadow: 24,
   p: 4,
+  maxHeight: '100vh',
 };
 
 export default modalBoxStyle;
