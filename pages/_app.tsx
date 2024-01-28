@@ -16,7 +16,7 @@ import { auth } from '../components/firebase';
 import { LogoutRounded, ShareRounded } from '@mui/icons-material';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
-import User from '../interfaces/User';
+import { Provider } from 'react-redux';
 
 function MyApp({ Component, pageProps }) {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);

@@ -5,7 +5,7 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
 module.exports = withBundleAnalyzer({
   reactStrictMode: true,
   images: {
-    domains: ['s3-us-west-1.amazonaws.com', 'cdn.shopify.com', 'ksr-ugc.imgix.net', 'boardgamesupply.com.au'],
+    domains: ['s3-us-west-1.amazonaws.com', 'cdn.shopify.com', 'ksr-ugc.imgix.net', 'boardgamesupply.com.au', 'cf.geekdo-images.com'],
   },
   swcMinify: true,
 });

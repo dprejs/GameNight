@@ -6,16 +6,17 @@ import Button from '@mui/material/Button';
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
 import AddCircleOutlineRoundedIcon from '@mui/icons-material/AddCircleOutlineRounded';
 import { createTheme } from '@mui/material/styles';
-import GameCard from '../../components/gameCard';
-import LibraryFilter from '../../components/libraryFilter';
-import modalBoxStyle from '../../components/modalStyle';
-import { AuthContext } from '../../contexts/AuthContext';
+import GameCard from '../../../components/gameCard';
+import LibraryFilter from '../../../components/libraryFilter';
+import modalBoxStyle from '../../../components/modalStyle';
+import { AuthContext } from '../../../contexts/AuthContext';
 import { useRouter } from 'next/router';
 import { IconButton } from '@mui/material';
-import game from '../../interfaces/game';
+import game from '../../../interfaces/game';
 import { SwipeableDrawer } from '@mui/material';
-import { DeviceContext } from '../../contexts/DeviceContext';
+import { DeviceContext } from '../../../contexts/DeviceContext';
 import { ArrowForwardIosRounded, CasinoRounded, CloseRounded } from '@mui/icons-material';
+import convert from 'xml-js';
 
 const theme = createTheme({
   palette: {
@@ -55,14 +56,24 @@ const Library: FC = (props) => {
   const device = useContext(DeviceContext)
 
   // gets uid from url and checks if user owns the library.
-  const { uid } = router.query;
+  const [uid, setUid] = useState<any>();
   const [isLibraryOwner, setIsLibraryOwner] = useState(false);
-  useEffect(() => {
+  const checkOwnership = () => {
     if (user && user.uid === uid) {
       setIsLibraryOwner(true);
     }
-  }, [uid, user]);
+  }
+  useEffect(() => {
+    if (router.isReady) {
+      setUid(router.query.uid);
+    }
+  }, [router.isReady])
 
+
+  useEffect(() => {
+    checkOwnership();
+    getLibrary();
+    }, [uid, user]);
 
   //updates state for games search and searches db for game matches
   const handleChange = (event) => {
@@ -93,12 +104,59 @@ const Library: FC = (props) => {
   //searches third party api for games on form submit
   const handleSearchSubmit = (event) => {
     event.preventDefault();
-    axios.get(`https://api.boardgameatlas.com/api/search?name=${search.input}&client_id=${process.env.NEXT_PUBLIC_CLIENT_ID}`)
+    axios.get(`https://www.boardgamegeek.com/xmlapi2/search?query=/${search.input}&type=boardgame,boardgameexpansion`)
       .then((res) => {
-        setSearch({
-          ...search,
-          results: res.data.games,
-        });
+        // console.log(res.data)
+        // console.log(convert.xml2js(res.data).elements[0].elements)
+        // const data = convert.xml2js(res.data).elements[0].elements
+        const ids = convert.xml2js(res.data).elements[0].elements.map((element) => element.attributes.id)
+        const uniqueIds = [... new Set(ids)];
+        axios.get(`https://www.boardgamegeek.com/xmlapi2/thing?id=${uniqueIds.toString()}`)
+          .then((res)=>{
+            const data = convert.xml2js(res.data).elements[0].elements
+            const results = data.map((element) => {
+              let game = {
+                id: element.attributes.id,
+                name: "",
+                year_published: "",
+                min_players: 0,
+                max_players: 0,
+                image_url: "/catan.png",
+                min_playtime: 0,
+                max_playtime: 0,
+                description: "",
+              }
+
+              element.elements.forEach((item) => {
+                if (item.name === "name" && item.attributes.type === "primary") {
+                  game.name = item.attributes.value;
+                } else if (item.name === "description") {
+                  game.description = item.elements[0].text;
+                } else if (item.name === "yearpublished") {
+                  game.year_published = item.attributes.value;
+                } else if (item.name === "minplayers") {
+                  game.min_players = item.attributes.value;
+                } else if (item.name === "maxplayers") {
+                  game.max_players = item.attributes.value;
+                } else if (item.name === "minplaytime") {
+                  game.min_playtime = item.attributes.value;
+                } else if (item.name === "maxplaytime") {
+                  game.max_playtime = item.attributes.value;
+                } else if (item.name === "image") {
+                  game.image_url = item.elements[0].text;
+                }
+              })
+              return game;
+            })
+            setSearch({
+              ...search,
+              results: results
+            });
+          })
+          .catch((err) => {
+            console.log('error getting search details', err);
+          })
+
       })
       .catch((err) => {
         console.log('error getting search results', err);
@@ -106,13 +164,15 @@ const Library: FC = (props) => {
   };
 
   const getLibrary = () => {
-    axios.get(`/../api/library/?uid=${user.uid}`)
-      .then((res) => {
-        setLibrary(res.data);
-      })
-      .catch((err) => {
-        console.log('error getting library', err)
-      })
+    if(uid) {
+      axios.get(`/../api/library/?uid=${uid}`)
+        .then((res) => {
+          setLibrary(res.data);
+        })
+        .catch((err) => {
+          console.log('error getting library', err)
+        })
+    }
   }
 
   const addGameToList = (game: game) => {
@@ -169,7 +229,7 @@ const Library: FC = (props) => {
       } else {
         setTimeout(() => {
           setUserUpdateCount((count) => count + 1);
-        }, 1000);
+        }, 2000);
       }
     }
   }, [user, userUpdateCount]);
@@ -277,6 +337,7 @@ const Library: FC = (props) => {
                 key={game.id}
                 game={game}
                 inLibrary={library.some(i => i.id === game.id)}
+                isLibraryOwner={isLibraryOwner}
                 updateLibrary={addGameToList}
                 updateList={() => removeGameById(game.id)}
               />)}
