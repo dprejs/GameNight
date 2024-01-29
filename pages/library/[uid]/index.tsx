@@ -109,9 +109,11 @@ const Library: FC = (props) => {
         // console.log(res.data)
         // console.log(convert.xml2js(res.data).elements[0].elements)
         // const data = convert.xml2js(res.data).elements[0].elements
-        const ids = convert.xml2js(res.data).elements[0].elements.map((element) => element.attributes.id)
-        const uniqueIds = [... new Set(ids)];
-        axios.get(`https://www.boardgamegeek.com/xmlapi2/thing?id=${uniqueIds.toString()}`)
+        let ids = {};
+        convert.xml2js(res.data).elements[0].elements.forEach((element) => {
+          ids[element.attributes.id] = true;
+        })
+        axios.get(`https://www.boardgamegeek.com/xmlapi2/thing?id=${Object.keys(ids).toString()}`)
           .then((res)=>{
             const data = convert.xml2js(res.data).elements[0].elements
             const results = data.map((element) => {
