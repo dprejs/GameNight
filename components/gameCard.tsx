@@ -12,8 +12,7 @@ import SingleTime from './gamePlayers/singleTime';
 import TimeRange from './gamePlayers/timeRange';
 import { CloseRounded } from '@mui/icons-material';
 import GameCardButton from './gameCardButtons';
-
-
+import { auth } from './firebase';
 
 const GameCard: FC<any> = (props) => {
   const { game, isLibraryOwner } = props;
@@ -33,104 +32,121 @@ const GameCard: FC<any> = (props) => {
     alignSelf: 'end',
     margin: '0px 4px',
 }
+  let fontSize = '25px';
+  if (game.name.length > 50){
+    fontSize = '15px';
+  } else if (game.name.length > 30) {
+    fontSize = '20px';
+  }
 
-const addGameToLibrary = () => {
-  axios.post(`/../api/library/addGame/?uid=${user.uid}`, game);
-  setInLibrary(true);
-  props.updateLibrary(game);
-}
+  const addGameToLibrary = () => {
+    auth.currentUser.getIdToken(true).then((idtoken) => {
+      const req = {
+        game: game,
+        user:idtoken,
+      }
+      axios.post(`/../api/library/addGame/?uid=${user.uid}`, req);
+      setInLibrary(true);
+      props.updateLibrary(game);
+    })
+    .catch((err) => {
+      console.error('Error geting user id token', err);
+    })
+  }
 
-const removeGameFromLibrary = () => {
-  axios.delete(`/../api/library/removeGame/?uid=${user.uid}&game_id=${game.id}`)
-  props.updateList();
-  setInLibrary(false);
-}
+  const removeGameFromLibrary = () => {
+    auth.currentUser.getIdToken(true).then((idToken) => {
+      axios.delete(`/../api/library/removeGame/?uid=${user.uid}&game_id=${game.id}&token=${idToken}`)
+    })
+    props.updateList();
+    setInLibrary(false);
+  }
 
-return (
-  <div className="gameCard">
-    <div
-      className="gameImage"
-    >
-      <Image
-        src={game.image_url}
-        alt={`${game.name} image`}
-        width={175}
-        height={175}
-      />
-    </div>
-    {/* <IconButton
-        aria-label="add to favorites"
-        color="primary"
-        className="favoriteButton"
-        onClick={() => setFavorite(!isFavorite)}
+  return (
+    <div className="gameCard">
+      <div
+        className="gameImage"
       >
-        {isFavorite ? <FavoriteRoundedIcon fontSize="large" /> : <FavoriteBorderRoundedIcon fontSize="large" />}
-      </IconButton> */}
-    <div className="gameName">
-      {game.name}
-    </div>
-    <div className="gamePlayers">
-      {game.min_players}
-      -
-      {game.max_players} Players
-    </div>
-    <div className="cardDivider" />
-    {oneGameTime ? <SingleTime
-      min_playtime={game.min_playtime}
-    /> : <TimeRange
-      min_playtime={game.min_playtime}
-      max_playtime={game.max_playtime}
-    />}
-    <div className="gameAge">
-      Ages {game.min_age}+
-    </div>
-    <div className="gameDescription">
-      {parse(game.description)}
-    </div>
-    <Button
-      variant="outlined"
-      className="detailButton"
-      style={cardStyle}
-      onClick={handleOpen}
-      color="inherit"
-    >
-      More Details
-    </Button>
-    {isLibraryOwner ?
-    <GameCardButton
-      inLibrary={inLibrary}
-      cardStyle={cardStyle}
-      removeGameFromLibrary={removeGameFromLibrary}
-      addGameToLibrary={addGameToLibrary}
-      /> :
-      null
-    }
-    <Modal
-      open={open}
-      onClose={handleClose}
-    >
-      <Box sx={modalBoxStyle}>
-        <div className="game-details">
-          <span className="details-banner">
-            <h2>
-              {game.name}
-            </h2>
-            <IconButton aria-label="close details" onClick={handleClose}>
-              <CloseRounded />
-            </IconButton>
-          </span>
-          <div className="year-published">
-            Published {game.year_published}
+        <Image
+          src={game.image_url}
+          alt={`${game.name} image`}
+          width={175}
+          height={175}
+        />
+      </div>
+      {/* <IconButton
+          aria-label="add to favorites"
+          color="primary"
+          className="favoriteButton"
+          onClick={() => setFavorite(!isFavorite)}
+        >
+          {isFavorite ? <FavoriteRoundedIcon fontSize="large" /> : <FavoriteBorderRoundedIcon fontSize="large" />}
+        </IconButton> */}
+      <div className="gameName" style={{fontSize:fontSize}}>
+        {game.name}
+      </div>
+      <div className="gamePlayers">
+        {game.min_players}
+        -
+        {game.max_players} Players
+      </div>
+      <div className="cardDivider" />
+      {oneGameTime ? <SingleTime
+        min_playtime={game.min_playtime}
+      /> : <TimeRange
+        min_playtime={game.min_playtime}
+        max_playtime={game.max_playtime}
+      />}
+      <div className="gameAge">
+        Ages {game.min_age}+
+      </div>
+      <div className="gameDescription">
+        {parse(game.description)}
+      </div>
+      <Button
+        variant="outlined"
+        className="detailButton"
+        style={cardStyle}
+        onClick={handleOpen}
+        color="inherit"
+      >
+        More Details
+      </Button>
+      {isLibraryOwner ?
+      <GameCardButton
+        inLibrary={inLibrary}
+        cardStyle={cardStyle}
+        removeGameFromLibrary={removeGameFromLibrary}
+        addGameToLibrary={addGameToLibrary}
+        /> :
+        null
+      }
+      <Modal
+        open={open}
+        onClose={handleClose}
+      >
+        <Box sx={modalBoxStyle}>
+          <div className="game-details">
+            <span className="details-banner">
+              <h2>
+                {game.name}
+              </h2>
+              <IconButton aria-label="close details" onClick={handleClose}>
+                <CloseRounded />
+              </IconButton>
+            </span>
+            <div className="year-published">
+              Published {game.year_published}
+            </div>
+            <div className="game-description">
+              {parse(game.description)}
+            </div>
           </div>
-          <div className="game-description">
-            {parse(game.description)}
-          </div>
-        </div>
-      </Box>
-    </Modal>
-  </div>
+        </Box>
+      </Modal>
+    </div>
 
-);
+  );
 };
 
 export default GameCard;

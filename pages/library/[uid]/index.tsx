@@ -117,6 +117,7 @@ const Library: FC = (props) => {
           .then((res)=>{
             const data = convert.xml2js(res.data).elements[0].elements
             const results = data.map((element) => {
+              console.log(element)
               let game = {
                 id: element.attributes.id,
                 name: "",
@@ -127,6 +128,7 @@ const Library: FC = (props) => {
                 min_playtime: 0,
                 max_playtime: 0,
                 description: "",
+                min_age: 0
               }
 
               element.elements.forEach((item) => {
@@ -146,6 +148,8 @@ const Library: FC = (props) => {
                   game.max_playtime = item.attributes.value;
                 } else if (item.name === "image") {
                   game.image_url = item.elements[0].text;
+                } else if (item.name === "minage") {
+                  game.min_age = item.attributes.value;
                 }
               })
               return game;
@@ -257,6 +261,7 @@ const Library: FC = (props) => {
     <div id="library">
       <h1 className="libraryHeader">
         Library
+        <br></br>{library.length} games
       </h1>
       {device.isMobile ?
         <div className='drawer' >
