@@ -17,6 +17,8 @@ import { LogoutRounded, ShareRounded } from '@mui/icons-material';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
 import { Provider } from 'react-redux';
+import theme from '../components/mui/themes';
+import { ThemeProvider } from '@mui/material';
 
 function MyApp({ Component, pageProps }) {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -30,7 +32,7 @@ function MyApp({ Component, pageProps }) {
   const logout = () => {
     signOut(auth)
       .then(() => {
-        router.push('/')
+        // router.push('/')
       })
       .catch(error => console.log(error));
   }
@@ -53,6 +55,8 @@ function MyApp({ Component, pageProps }) {
   return (
     <DeviceContextProvider>
       <AuthProvider>
+        <ThemeProvider theme={theme}>
+
         <Head>
           <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
           <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
@@ -113,6 +117,7 @@ function MyApp({ Component, pageProps }) {
         null
         }
         <Component {...pageProps} />
+        </ThemeProvider>
       </AuthProvider>
     </DeviceContextProvider>
   );

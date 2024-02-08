@@ -12,17 +12,22 @@ import SingleTime from './gamePlayers/singleTime';
 import TimeRange from './gamePlayers/timeRange';
 import { CloseRounded } from '@mui/icons-material';
 import GameCardButton from './gameCardButtons';
+import { Skeleton } from '@mui/material';
+import CircularProgress from '@mui/material/CircularProgress';
 import { auth } from './firebase';
 
 const GameCard: FC<any> = (props) => {
-  const { game, isLibraryOwner } = props;
+  const { game, isLibraryOwner, isPlaceholder } = props;
   const [isFavorite, setFavorite] = useState(false);
   const [open, setOpen] = useState(false);
   const [inLibrary, setInLibrary] = useState(props.inLibrary)
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const user = useContext(AuthContext);
-  const oneGameTime = game.min_playtime === game.max_playtime;
+  let oneGameTime = true
+  if (!isPlaceholder) {
+    oneGameTime = game.min_playtime === game.max_playtime;
+  }
 
   const cardStyle = {
     fontSize: '.75rem',
@@ -33,10 +38,12 @@ const GameCard: FC<any> = (props) => {
     margin: '0px 4px',
 }
   let fontSize = '25px';
-  if (game.name.length > 50){
-    fontSize = '15px';
-  } else if (game.name.length > 30) {
-    fontSize = '20px';
+  if (!isPlaceholder){
+    if (game.name.length > 50){
+      fontSize = '15px';
+    } else if (game.name.length > 30) {
+      fontSize = '20px';
+    }
   }
 
   const addGameToLibrary = () => {
@@ -61,18 +68,36 @@ const GameCard: FC<any> = (props) => {
     props.updateList();
     setInLibrary(false);
   }
+  const gameTimeDisplay = (oneGameTime) => {
+    return (
+    <>
+      {oneGameTime ? <SingleTime
+        min_playtime={game.min_playtime}
+      /> : <TimeRange
+        min_playtime={game.min_playtime}
+        max_playtime={game.max_playtime}
+      />}
+    </>
+    )
 
+  }
   return (
     <div className="gameCard">
       <div
         className="gameImage"
       >
+        {isPlaceholder ? <CircularProgress
+        size={175}
+        thickness={5}
+        color='secondary'
+        /> :
         <Image
           src={game.image_url}
           alt={`${game.name} image`}
           width={175}
           height={175}
         />
+        }
       </div>
       {/* <IconButton
           aria-label="add to favorites"
@@ -83,27 +108,29 @@ const GameCard: FC<any> = (props) => {
           {isFavorite ? <FavoriteRoundedIcon fontSize="large" /> : <FavoriteBorderRoundedIcon fontSize="large" />}
         </IconButton> */}
       <div className="gameName" style={{fontSize:fontSize}}>
-        {game.name}
+        {isPlaceholder ? <Skeleton variant='text' height={70} sx={{fontSize:fontSize, bgcolor:'grey.500'}}/> :
+        game.name
+        }
       </div>
       <div className="gamePlayers">
-        {game.min_players}
-        -
-        {game.max_players} Players
+        {isPlaceholder ? <Skeleton variant='text' width={50} sx={{bgcolor: 'grey.500'}}/> :
+        `${game.min_players}-${game.max_players} Players`
+        }
       </div>
       <div className="cardDivider" />
-      {oneGameTime ? <SingleTime
-        min_playtime={game.min_playtime}
-      /> : <TimeRange
-        min_playtime={game.min_playtime}
-        max_playtime={game.max_playtime}
-      />}
+      {isPlaceholder ? null : gameTimeDisplay(oneGameTime)}
       <div className="gameAge">
-        Ages {game.min_age}+
+        {isPlaceholder ? <Skeleton variant='text' width={30} sx={{bgcolor: 'grey.500'}}/> :
+        `Ages ${game.min_age}+`
+        }
       </div>
       <div className="gameDescription">
-        {parse(game.description)}
+        {isPlaceholder ? <Skeleton variant='text' height={180} sx={{bgcolor: 'grey.500', marginTop: '-30px'}}/> :
+        parse(game.description)
+        }
       </div>
-      <Button
+      {isPlaceholder ? null :
+      <><Button
         variant="outlined"
         className="detailButton"
         style={cardStyle}
@@ -144,7 +171,9 @@ const GameCard: FC<any> = (props) => {
           </div>
         </Box>
       </Modal>
-    </div>
+    </>
+      }
+      </div>
 
   );
 };

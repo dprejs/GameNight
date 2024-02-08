@@ -7,8 +7,6 @@ import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
 import AddCircleOutlineRoundedIcon from '@mui/icons-material/AddCircleOutlineRounded';
 import { ExpandMoreRounded } from '@mui/icons-material';
 import CircularProgress from '@mui/material/CircularProgress';
-import { ThemeProvider } from '@mui/material/styles';
-import theme from '../../../components/mui/themes';
 import GameCard from '../../../components/gameCard';
 import LibraryFilter from '../../../components/libraryFilter';
 import modalBoxStyle from '../../../components/modalStyle';
@@ -37,6 +35,7 @@ const Library: FC = (props) => {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const [library, setLibrary] = useState([]);
+  const [libraryIsLoading, setLibraryIsLoading] = useState(false);
   const [search, setSearch] = useState({
     input: '',
     results: [],
@@ -221,8 +220,10 @@ const Library: FC = (props) => {
 
   const getLibrary = () => {
     if(uid) {
+      setLibraryIsLoading(true)
       axios.get(`/../api/library/?uid=${uid}`)
         .then((res) => {
+          setLibraryIsLoading(false)
           setLibrary(res.data);
         })
         .catch((err) => {
@@ -308,7 +309,6 @@ const Library: FC = (props) => {
       };
 
   return (
-    <ThemeProvider theme={theme} >
     <div id="library">
       {device.isMobile ?
         <div className='drawer' >
@@ -372,6 +372,7 @@ const Library: FC = (props) => {
     }
         </div>
       <div className="gameList">
+        {libraryIsLoading ? <GameCard isPlaceholder={true} /> : null}
         {library.filter(applyFilters).map((game, index) => <GameCard
           key={game.id}
           inLibrary={library.some(i => i.id === game.id)}
@@ -445,7 +446,6 @@ const Library: FC = (props) => {
         </Box>
       </Modal>
     </div>
-    </ThemeProvider>
   );
 };
 
