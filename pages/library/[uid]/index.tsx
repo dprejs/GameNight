@@ -5,7 +5,10 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
 import AddCircleOutlineRoundedIcon from '@mui/icons-material/AddCircleOutlineRounded';
-import { createTheme } from '@mui/material/styles';
+import { ExpandMoreRounded } from '@mui/icons-material';
+import CircularProgress from '@mui/material/CircularProgress';
+import { ThemeProvider } from '@mui/material/styles';
+import theme from '../../../components/mui/themes';
 import GameCard from '../../../components/gameCard';
 import LibraryFilter from '../../../components/libraryFilter';
 import modalBoxStyle from '../../../components/modalStyle';
@@ -19,15 +22,6 @@ import { ArrowForwardIosRounded, CasinoRounded, CloseRounded } from '@mui/icons-
 import convert from 'xml-js';
 import Image from 'next/image';
 
-const theme = createTheme({
-  palette: {
-    primary: {
-      light: '#000',
-      main: '#000',
-      dark: '#F8F8FF',
-    },
-  },
-});
 
 const buttonStyle = {
   backgroundColor: 'var(--white)',
@@ -56,7 +50,11 @@ const Library: FC = (props) => {
   const [userDisplay, setUserDisplay] = useState({
     displayName: '',
     photoURL: '/icons8-male-user-48.png',
-  })
+  });
+  const [moreSearchResults, setMoreSearchResults] = useState(false);
+  const [searchIndex, setSearchIndex] = useState(0);
+  const [searchIds, setSearchIds] = useState([]);
+  const [searchLoading, setSearchLoading] = useState(false);
   const user = useContext(AuthContext);
   const device = useContext(DeviceContext)
 
@@ -121,60 +119,79 @@ const Library: FC = (props) => {
     }
   };
 
+  const formatGame = (rawGame) => {
+    let game = {
+      id: rawGame.attributes.id,
+      name: "",
+      year_published: "",
+      min_players: 0,
+      max_players: 0,
+      image_url: "/catan.png",
+      min_playtime: 0,
+      max_playtime: 0,
+      description: "",
+      min_age: 0
+    }
+
+    rawGame.elements.forEach((item) => {
+      if (item.name === "name" && item.attributes.type === "primary") {
+        game.name = item.attributes.value;
+      } else if (item.name === "description") {
+        game.description = item.elements[0].text;
+      } else if (item.name === "yearpublished") {
+        game.year_published = item.attributes.value;
+      } else if (item.name === "minplayers") {
+        game.min_players = item.attributes.value;
+      } else if (item.name === "maxplayers") {
+        game.max_players = item.attributes.value;
+      } else if (item.name === "minplaytime") {
+        game.min_playtime = item.attributes.value;
+      } else if (item.name === "maxplaytime") {
+        game.max_playtime = item.attributes.value;
+      } else if (item.name === "image") {
+        game.image_url = item.elements[0].text;
+      } else if (item.name === "minage") {
+        game.min_age = item.attributes.value;
+      }
+    })
+    return game;
+  }
+  const parseGameCard = (res, keep:boolean) => {
+    const data = convert.xml2js(res.data).elements[0].elements
+    let results = search.results
+    if (keep) {
+      results = [...results, ...data.map(formatGame)]
+    } else {
+      results = data.map(formatGame)
+      const resultsDiv = document.getElementsByClassName("searchResults")
+      resultsDiv[0].scrollTop = 0
+    }
+    setSearchLoading(false);
+    setSearch({
+      ...search,
+      results: results
+    });
+  }
+
+
   //searches third party api for games on form submit
   const handleSearchSubmit = (event) => {
     event.preventDefault();
+    setSearchLoading(true);
     axios.get(`https://www.boardgamegeek.com/xmlapi2/search?query=/${search.input}&type=boardgame,boardgameexpansion`)
       .then((res) => {
         let ids = {};
         convert.xml2js(res.data).elements[0].elements.forEach((element) => {
           ids[element.attributes.id] = true;
         })
-        axios.get(`https://www.boardgamegeek.com/xmlapi2/thing?id=${Object.keys(ids).toString()}`)
-          .then((res)=>{
-            const data = convert.xml2js(res.data).elements[0].elements
-            const results = data.map((element) => {
-              let game = {
-                id: element.attributes.id,
-                name: "",
-                year_published: "",
-                min_players: 0,
-                max_players: 0,
-                image_url: "/catan.png",
-                min_playtime: 0,
-                max_playtime: 0,
-                description: "",
-                min_age: 0
-              }
-
-              element.elements.forEach((item) => {
-                if (item.name === "name" && item.attributes.type === "primary") {
-                  game.name = item.attributes.value;
-                } else if (item.name === "description") {
-                  game.description = item.elements[0].text;
-                } else if (item.name === "yearpublished") {
-                  game.year_published = item.attributes.value;
-                } else if (item.name === "minplayers") {
-                  game.min_players = item.attributes.value;
-                } else if (item.name === "maxplayers") {
-                  game.max_players = item.attributes.value;
-                } else if (item.name === "minplaytime") {
-                  game.min_playtime = item.attributes.value;
-                } else if (item.name === "maxplaytime") {
-                  game.max_playtime = item.attributes.value;
-                } else if (item.name === "image") {
-                  game.image_url = item.elements[0].text;
-                } else if (item.name === "minage") {
-                  game.min_age = item.attributes.value;
-                }
-              })
-              return game;
-            })
-            setSearch({
-              ...search,
-              results: results
-            });
-          })
+        const idsArray = Object.keys(ids)
+        setSearchIds(idsArray);
+        if (idsArray.length > 10) {
+          setMoreSearchResults(true)
+          setSearchIndex(10)
+        }
+        axios.get(`https://www.boardgamegeek.com/xmlapi2/thing?id=${idsArray.slice(0,10).toString()}`)
+          .then((res) => parseGameCard(res, false))
           .catch((err) => {
             console.log('error getting search details', err);
           })
@@ -184,6 +201,23 @@ const Library: FC = (props) => {
         console.log('error getting search results', err);
       });
   };
+  const moreResults = (event) =>{
+    event.preventDefault()
+    console.log('searchIndex', searchIndex);
+    console.log('searchIds', searchIds);
+    const newIndex = searchIndex + 10;
+    if (newIndex >= searchIds.length) {
+      setMoreSearchResults(false)
+    }
+    axios.get(`https://www.boardgamegeek.com/xmlapi2/thing?id=${searchIds.slice(searchIndex, newIndex).toString()}`)
+    .then((res) => parseGameCard(res,true))
+    .then(()=>{
+      setSearchIndex(newIndex)
+    })
+    .catch((err) => {
+      console.log(err)
+    })
+  }
 
   const getLibrary = () => {
     if(uid) {
@@ -274,6 +308,7 @@ const Library: FC = (props) => {
       };
 
   return (
+    <ThemeProvider theme={theme} >
     <div id="library">
       {device.isMobile ?
         <div className='drawer' >
@@ -379,6 +414,9 @@ const Library: FC = (props) => {
                 <SearchRoundedIcon />
               </IconButton>
             </form>
+            {searchLoading ?
+            <CircularProgress color='secondary'/>
+            : null}
             <div className="searchResults">
               {search.results.map((game) => <GameCard
                 key={game.id}
@@ -388,11 +426,26 @@ const Library: FC = (props) => {
                 updateLibrary={addGameToList}
                 updateList={() => removeGameById(game.id)}
               />)}
+              <div className='searchPagination'>
+                  {moreSearchResults ?
+                  <Button
+                    variant='outlined'
+                    endIcon={<ExpandMoreRounded />}
+                    onClick={moreResults}
+                    color='inherit'
+                    className='iconButton'
+                    style={buttonStyle}>
+                    More Results
+                  </Button>:
+                  null
+                }
+              </div>
             </div>
           </div>
         </Box>
       </Modal>
     </div>
+    </ThemeProvider>
   );
 };
 

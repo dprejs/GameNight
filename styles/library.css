@@ -222,6 +222,9 @@ flex-direction: column;
   overflow-y: auto;
   width: fit-content;
   max-height: 500px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 .drawer {
   grid-column: 3/4;

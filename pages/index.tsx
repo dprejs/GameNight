@@ -3,6 +3,8 @@ import Head from 'next/head';
 import Link from 'next/link';
 import styles from '../styles/Home.module.css';
 import { AuthContext } from '../contexts/AuthContext';
+import { ThemeProvider } from '@mui/material';
+import theme from '../components/mui/themes';
 
 export default function Home() {
   const user = useContext(AuthContext);
@@ -14,6 +16,7 @@ export default function Home() {
   }
 
   return (
+    <ThemeProvider theme={theme}>
     <div className={styles.container} style={backgroundStyle}>
       <Head>
         <title>My Game Shelf</title>
@@ -49,11 +52,9 @@ export default function Home() {
                 <h2>Login / Sign up</h2>
               </div>
             </Link>
-
           </div>}
-
       </main>
-
     </div>
+    </ThemeProvider>
   )
 }
