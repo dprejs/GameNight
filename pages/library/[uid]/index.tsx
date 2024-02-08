@@ -12,7 +12,7 @@ import LibraryFilter from '../../../components/libraryFilter';
 import modalBoxStyle from '../../../components/modalStyle';
 import { AuthContext } from '../../../contexts/AuthContext';
 import { useRouter } from 'next/router';
-import { IconButton } from '@mui/material';
+import { IconButton, Skeleton } from '@mui/material';
 import game from '../../../interfaces/game';
 import { SwipeableDrawer } from '@mui/material';
 import { DeviceContext } from '../../../contexts/DeviceContext';
@@ -50,6 +50,7 @@ const Library: FC = (props) => {
     displayName: '',
     photoURL: '/icons8-male-user-48.png',
   });
+  const [userNameLoading, setUserNameLoading] = useState(false);
   const [moreSearchResults, setMoreSearchResults] = useState(false);
   const [searchIndex, setSearchIndex] = useState(0);
   const [searchIds, setSearchIds] = useState([]);
@@ -68,8 +69,10 @@ const Library: FC = (props) => {
   useEffect(() => {
     if (router.isReady) {
       setUid(router.query.uid);
+      setUserNameLoading(true);
       axios.get(`../api/users/getUserDisplay/?uid=${router.query.uid}`).then((res) => {
         if(res.data.photoURL) {
+          setUserNameLoading(false);
           setUserDisplay({
             displayName: res.data.displayName,
             photoURL: res.data.photoURL,
@@ -347,7 +350,13 @@ const Library: FC = (props) => {
             />
           </span>
           <span className='profileName'>
-            {userDisplay.displayName}
+            {userNameLoading ? <Skeleton
+            variant='text'
+            width={70}
+            height={40}
+            sx={{bgcolor:'grey.500'}}/> :
+            userDisplay.displayName
+            }
           </span>
         </div>
         <span>
@@ -416,7 +425,7 @@ const Library: FC = (props) => {
               </IconButton>
             </form>
             {searchLoading ?
-            <CircularProgress color='secondary'/>
+            <CircularProgress color='secondary' thickness={10}/>
             : null}
             <div className="searchResults">
               {search.results.map((game) => <GameCard

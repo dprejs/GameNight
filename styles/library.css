@@ -81,6 +81,9 @@ flex-direction: column;
 .profilePicture {
   display: flex;
 }
+.profileName {
+  margin-left: 5px;
+}
 .break {
   flex-basis: 100%;
   height: 0;
@@ -229,7 +232,7 @@ flex-direction: column;
 .drawer {
   grid-column: 3/4;
   grid-row: 1/2;
-  margin-top: 10px;
+  margin: 5px 0px;
 }
 .iconButton {
   /* align-self: center; */
