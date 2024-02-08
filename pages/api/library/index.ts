@@ -1,5 +1,10 @@
 import libraries from "../../../database/models/libraries";
 
+export const config = {
+  api: {
+    externalResolver: true,
+  },
+}
 
 const { getUserLibrary } = libraries;
 export default function handler(req, res) {
@@ -12,7 +17,7 @@ export default function handler(req, res) {
       })
       .catch((err) => {
         console.log(err);
-        res.status(500).send('error adding game')
+        res.status(500).send('error retrieving library')
       })
     } else {
       res.status(400).send('no user id given')

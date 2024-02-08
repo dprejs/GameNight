@@ -17,6 +17,7 @@ import { SwipeableDrawer } from '@mui/material';
 import { DeviceContext } from '../../../contexts/DeviceContext';
 import { ArrowForwardIosRounded, CasinoRounded, CloseRounded } from '@mui/icons-material';
 import convert from 'xml-js';
+import Image from 'next/image';
 
 const theme = createTheme({
   palette: {
@@ -52,6 +53,10 @@ const Library: FC = (props) => {
     gameLength: 480,
     youngPlayer: 0,
   });
+  const [userDisplay, setUserDisplay] = useState({
+    displayName: '',
+    photoURL: '/icons8-male-user-48.png',
+  })
   const user = useContext(AuthContext);
   const device = useContext(DeviceContext)
 
@@ -66,6 +71,21 @@ const Library: FC = (props) => {
   useEffect(() => {
     if (router.isReady) {
       setUid(router.query.uid);
+      axios.get(`../api/users/getUserDisplay/?uid=${router.query.uid}`).then((res) => {
+        if(res.data.photoURL) {
+          setUserDisplay({
+            displayName: res.data.displayName,
+            photoURL: res.data.photoURL,
+          })
+        } else {
+          setUserDisplay({
+            displayName: res.data.displayName,
+            photoURL: '/icons8-male-user-48.png',
+          })
+        }
+      }).catch((err) => {
+        console.log(err);
+      })
     }
   }, [router.isReady])
 
@@ -106,9 +126,6 @@ const Library: FC = (props) => {
     event.preventDefault();
     axios.get(`https://www.boardgamegeek.com/xmlapi2/search?query=/${search.input}&type=boardgame,boardgameexpansion`)
       .then((res) => {
-        // console.log(res.data)
-        // console.log(convert.xml2js(res.data).elements[0].elements)
-        // const data = convert.xml2js(res.data).elements[0].elements
         let ids = {};
         convert.xml2js(res.data).elements[0].elements.forEach((element) => {
           ids[element.attributes.id] = true;
@@ -117,7 +134,6 @@ const Library: FC = (props) => {
           .then((res)=>{
             const data = convert.xml2js(res.data).elements[0].elements
             const results = data.map((element) => {
-              console.log(element)
               let game = {
                 id: element.attributes.id,
                 name: "",
@@ -259,10 +275,6 @@ const Library: FC = (props) => {
 
   return (
     <div id="library">
-      <h1 className="libraryHeader">
-        Library
-        <br></br>{library.length} games
-      </h1>
       {device.isMobile ?
         <div className='drawer' >
           <Button
@@ -286,6 +298,44 @@ const Library: FC = (props) => {
         </div> :
         <LibraryFilter filter={filter} setFilter={setFilter} setLibrary={setLibrary} />
       }
+      <div className='libraryBody'>
+        <div className='libraryHead'>
+      <h1 className="libraryHeader">
+        <div className='ProfileToken'>
+          <span className='profilePicture'>
+            <Image
+              src={'https://lh3.googleusercontent.com/a-/AOh14GhASFY7xAcGlyHq4mHraFXrKvWbnyjFJ-gq5GzV6A=s96-c'}
+              alt={`${userDisplay.displayName} profile picture`}
+              style={{borderRadius: 90, display: 'flex', justifySelf: 'center'}}
+              width={25}
+              height={25}
+            />
+          </span>
+          <span className='profileName'>
+            {userDisplay.displayName}
+          </span>
+        </div>
+        <span>
+        Library
+        </span>
+        <span className='break'></span>
+        <span>
+        {library.length} games
+        </span>
+      </h1>
+      {isLibraryOwner ?
+      <Button
+        variant="outlined"
+        onClick={handleOpen} className={device.isMobile ? "addGame mobile" : "addGame"}
+        endIcon={<AddCircleOutlineRoundedIcon />}
+        color="inherit"
+        style={{ ...buttonStyle, marginRight: '5px', marginTop: '21.44px' }}
+      >
+        Add Game
+      </Button>
+      : null
+    }
+        </div>
       <div className="gameList">
         {library.filter(applyFilters).map((game, index) => <GameCard
           key={game.id}
@@ -295,18 +345,8 @@ const Library: FC = (props) => {
           isLibraryOwner={isLibraryOwner}
         />)}
       </div>
-      {isLibraryOwner ?
-      <Button
-        variant="outlined"
-        onClick={handleOpen} className={device.isMobile ? "addGame mobile" : "addGame"}
-        endIcon={<AddCircleOutlineRoundedIcon />}
-        color="inherit"
-        style={{ ...buttonStyle, marginRight: '5px' }}
-      >
-        Add Game
-      </Button>
-      : null
-    }
+      </div>
+
       <Modal
         open={open}
         onClose={handleClose}
