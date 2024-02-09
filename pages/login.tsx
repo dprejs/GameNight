@@ -148,32 +148,21 @@ const LoginPage: FC = () => {
 
   const googleSignIn = (event) => {
     //login with redirect in mobile browsers
-    if (device.isMobile || device.isTablet) {
-      signInWithRedirect(auth, provider)
-        .catch((error) => {
-          const errorCode = error.code;
-          const errorMessage = error.message;
-          const email = error.email;
-          const credential = GoogleAuthProvider.credentialFromError(error);
-          console.log(errorCode, errorMessage);
-        });
-    } else {
-      //login with popup for desktop
-      signInWithPopup(auth, provider)
-        .then((result) => {
-          const credential = GoogleAuthProvider.credentialFromResult(result);
-          const token = credential.accessToken;
-          const { user } = result;
-          googleSignInApiCall(user);
-        })
-        .catch((error) => {
-          const errorCode = error.code;
-          const errorMessage = error.message;
-          const email = error.email;
-          const credential = GoogleAuthProvider.credentialFromError(error);
-          console.log(errorCode, errorMessage);
-        });
-    }
+    //login with popup
+    signInWithPopup(auth, provider)
+      .then((result) => {
+        const credential = GoogleAuthProvider.credentialFromResult(result);
+        const token = credential.accessToken;
+        const { user } = result;
+        googleSignInApiCall(user);
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        const email = error.email;
+        const credential = GoogleAuthProvider.credentialFromError(error);
+        console.log(errorCode, errorMessage);
+      });
   };
 
   return (
