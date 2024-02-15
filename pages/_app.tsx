@@ -99,7 +99,7 @@ function MyApp({ Component, pageProps }) {
               </MenuItem>
               <MenuItem onClick={() => {
                 if (user) {
-                  navigator.clipboard.writeText(`http://52.53.160.213/library/${user.uid}`);
+                  navigator.clipboard.writeText(`https://mygameshelf.app/library/${user.uid}`);
                   setCopyAlert(true);
                   setTimeout(() => setCopyAlert(false), 15000);
                 }

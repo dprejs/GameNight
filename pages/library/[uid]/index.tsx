@@ -205,8 +205,6 @@ const Library: FC = (props) => {
   };
   const moreResults = (event) =>{
     event.preventDefault()
-    console.log('searchIndex', searchIndex);
-    console.log('searchIds', searchIds);
     const newIndex = searchIndex + 10;
     if (newIndex >= searchIds.length) {
       setMoreSearchResults(false)
@@ -396,12 +394,20 @@ const Library: FC = (props) => {
         open={open}
         onClose={handleClose}
       >
-        <Box sx={modalBoxStyle}>
+        <Box sx={{...modalBoxStyle, backgroundColor: '#557D68'}}>
           <div id="game-search-modal">
+            <div className='searchTopCard borderThick'>
             <IconButton
               className='upperRight'
               aria-label='close game search modal'
-              onClick={handleClose}>
+              onClick={handleClose}
+              sx={{
+                border: '1px solid black',
+                borderRadius: '10px',
+                padding:'2px',
+                margin: '2px',
+                backgroundColor: 'white',
+                color: 'black'}}>
               <CloseRounded />
             </IconButton>
             <h2 className="search-header">
@@ -412,18 +418,27 @@ const Library: FC = (props) => {
                 <CasinoRounded />
               </span>
             </h2>
-            <form onSubmit={handleSearchSubmit}>
+            <form onSubmit={handleSearchSubmit} className='searchForm'>
+
               <input type="text"
                 onChange={handleChange}
                 placeholder="Enter Game Name"
                 style={{
                   fontSize: 'larger',
-                  marginBottom: '15px'
+                  marginBottom: '5px'
                 }} />
-              <IconButton aria-label='search-games' type="submit">
-                <SearchRoundedIcon />
+              <IconButton aria-label='search-games' type="submit" sx={{
+                fontSize: "medium",
+                border: '1px solid black',
+                borderRadius: '10px',
+                padding: '2px',
+                color: 'black',
+                backgroundColor: 'white'
+              }}>
+                Submit to load more Results <SearchRoundedIcon />
               </IconButton>
             </form>
+            </div>
             {searchLoading ?
             <CircularProgress color='secondary' thickness={10}/>
             : null}

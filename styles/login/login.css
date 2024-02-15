@@ -11,6 +11,7 @@
   width: fit-content;
   border: 1px solid black;
   border-radius: 15px;
+  background-color: white;
 }
 
 .loginPanel {
@@ -23,4 +24,8 @@
 }
 .loginPanel > * {
   margin-bottom: 10px;
+}
+.login-tab-panel {
+  font-weight: bold;
+  color: black;
 }

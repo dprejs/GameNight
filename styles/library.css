@@ -8,7 +8,6 @@
   bottom: 0;
   height: calc(100vh - 70px);
   overflow-y: hidden;
-  padding-bottom: 15px;
 }
 
 .libraryBody {
@@ -27,7 +26,7 @@ flex-direction: column;
   flex-direction: row;
   flex-wrap: wrap;
   /* overflow-y: scroll; */
-  padding-bottom: 100px;
+  padding-bottom: 10px;
   justify-content: space-evenly;
 }
 
@@ -248,8 +247,32 @@ flex-direction: column;
 #game-search-modal {
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
   align-items: center;
+  background-color: #557D68;
+
+}
+.searchForm {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 5%;
+}
+.searchTopCard{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 300px;
+  margin-left: -10px;
+  background-color: var(--red);
+  /* background-color: white; */
+}
+.border {
+  border: 1px solid black;
+  border-radius: 10px;
+}
+.borderThick {
+  border: 2px solid black;
+  border-radius: 10px;
 }
 
 .upperRight {
@@ -260,6 +283,10 @@ flex-direction: column;
   width: 75%;
   display: flex;
   justify-content: center;
+  margin-top: -10px;
+  color: white;
+  /* color: black; */
+  font-size: 25px;
 }
 .search-header svg {
   margin-left: 10px;

@@ -170,9 +170,12 @@ const LoginPage: FC = () => {
       <div className="loginBox">
         <Box sx={{ width: '100%' }}>
           <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-            <Tabs value={tabValue} onChange={handleChange}>
-              <Tab label="Login" id="login-tabpanel-0" />
-              <Tab label="Sign up with email" id="login-tabpanel-1" />
+            <Tabs value={tabValue} onChange={handleChange}
+            textColor='secondary'
+            indicatorColor='secondary'>
+              <Tab label="Login" id="login-tabpanel-0" className='login-tab-panel'/>
+              <Tab label="Sign up with email" id="login-tabpanel-1"
+              className='login-tab-panel'/>
             </Tabs>
           </Box>
           <TabPanel value={tabValue} index={0}>
