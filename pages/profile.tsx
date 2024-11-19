@@ -85,8 +85,8 @@ const Profile: FC = () => {
           Friends: Coming soon!
         </div>
         <Button
-        className="iconButton"
-        style={buttonStyle}
+        className={styles.button}
+        sx={buttonStyle}
         onClick={logout}
         endIcon={<LogoutRounded />}
         >

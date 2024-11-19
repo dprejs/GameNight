@@ -398,7 +398,7 @@ const Library: FC = (props) => {
           <div id="game-search-modal">
             <div className='searchTopCard borderThick'>
             <IconButton
-              className='upperRight'
+              className='upperRight buttonHover'
               aria-label='close game search modal'
               onClick={handleClose}
               sx={{
@@ -427,7 +427,9 @@ const Library: FC = (props) => {
                   fontSize: 'larger',
                   marginBottom: '5px'
                 }} />
-              <IconButton aria-label='search-games' type="submit" sx={{
+              <IconButton aria-label='search-games' type="submit"
+              className="buttonHover"
+              sx={{
                 fontSize: "medium",
                 border: '1px solid black',
                 borderRadius: '10px',
