@@ -181,6 +181,7 @@ const Library: FC = (props) => {
     event.preventDefault();
     setSearchLoading(true);
     axios.get(`https://www.boardgamegeek.com/xmlapi2/search?query=/${search.input}&type=boardgame,boardgameexpansion`)
+
       .then((res) => {
         let ids = {};
         convert.xml2js(res.data).elements[0].elements.forEach((element) => {
