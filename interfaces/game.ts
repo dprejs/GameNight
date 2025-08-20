@@ -12,4 +12,15 @@ export default interface game {
   rules_url: string | null;
   official_url: string | null;
   year_published: number | null;
+  category: string | null;
+  difficulty: string | null;
+  bgg_rating: string | null;
+  game_type: [string] | null;
+  best_player_count: string | null;
+  is_classic: boolean | null;
+  is_coop: boolean | null;
+  is_party: boolean | null;
+  is_expansion: boolean | null;
+  bgg_id: string | null;
+  bgg_description: string | null;
 }

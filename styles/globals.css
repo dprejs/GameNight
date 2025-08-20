@@ -35,6 +35,7 @@ a {
 .Title {
   font-size: 50px;
   margin-top: 0px;
+  padding-left: 10px;
 }
 
 .Title:hover {

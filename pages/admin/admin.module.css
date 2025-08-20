@@ -1,0 +1,42 @@
+#admin {
+  color: white;
+  font-size: 70px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+}
+
+#modal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: white;
+  background-color: #557D68;
+}
+
+.searchResults{
+  overflow-y: scroll;
+  height: 75vh;
+}
+
+#imageSelect {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+.modal{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  border: 2px solid #000;
+  box-shadow: 24;
+  padding: 4px;
+  max-height: 100vh;
+  width: 85vw;
+}

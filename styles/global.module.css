@@ -16,3 +16,145 @@
   border-radius: 10px;
   font-size: small;
 }
+
+.editGameModal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90vw;
+  background-color: var(--white);
+  border: 2px solid black;
+  box-shadow: 24;
+  padding: 4px;
+  height: 95vh;
+
+}
+
+.editGameModal textarea {
+  height: 100px;
+}
+
+.modalHeader {
+  display: flex;
+  width: 100%;
+  justify-content: flex-end;
+}
+
+.modalBody {
+  height: 80vh;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.modalFooter {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  gap: 50px;
+}
+.updateRes {
+width: 100%;
+display: flex;
+justify-content: center;
+}
+
+.updateResGood {
+background-color: lightgreen;
+padding: 5px;
+margin: 3px;
+border: 2px solid darkgreen;
+border-radius: 5px;
+}
+
+.updateResBad {
+background-color: lightcoral;
+padding: 5px;
+margin: 3px;
+border: 2px solid darkred;
+border-radius: 5px;
+}
+
+.formColumn {
+  height: 100%;
+  overflow-y: scroll;
+  padding-right: 10px;
+}
+
+.searchColumn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.searchHeader {
+  background-color: var(--red);
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px;
+  font-size: 25px;
+  gap: 5px;
+  border: 1px solid black;
+  border-radius: 10px;
+  width: 325px;
+}
+
+.divider {
+  background-color: black;
+  width: 2px;
+  height: 90%;
+}
+
+.input {
+  display: flex;
+  flex-direction: column;
+}
+
+.inputH {
+  display: flex;
+}
+
+.iS {
+  width: 50px;
+}
+
+.typeCard {
+  border: 1px solid black;
+  padding-left: 4px;
+  height: 30px;
+  display: flex;
+  justify-content: center;
+}
+
+.typeCard button {
+  border: 1px solid black;
+  margin: -1px;
+  margin-left: 8px;
+  height: calc(100% + 2px);
+  padding: 2px;
+  color: black;
+  width: 20px;
+  border-radius: 0px;
+  background-color: white;
+}
+
+.typeCard button:hover{
+  cursor: pointer;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+}
+
+.typeGroup {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  margin-top: 5px;
+}

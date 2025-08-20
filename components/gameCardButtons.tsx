@@ -3,7 +3,7 @@ import { Button } from '@mui/material';
 
 const GameCardButton = ({ inLibrary,
   cardStyle,
-  removeGameFromLibrary,
+  openEdit,
   addGameToLibrary,
 }) => {
 
@@ -14,9 +14,9 @@ const GameCardButton = ({ inLibrary,
         variant="outlined"
         className="addToLibrary"
         style={cardStyle}
-        onClick={removeGameFromLibrary}
+        onClick={openEdit}
         color="inherit"
-      >Remove Game</Button> : <Button
+      >Edit Game</Button> : <Button
         variant="outlined"
         className="addToLibrary"
         style={cardStyle}

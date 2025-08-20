@@ -17,7 +17,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import { auth } from './firebase';
 
 const GameCard: FC<any> = (props) => {
-  const { game, isLibraryOwner, isPlaceholder } = props;
+  const { game, isLibraryOwner, isPlaceholder, isBulkUpdate, mergeFunc, openEdit } = props;
   const [isFavorite, setFavorite] = useState(false);
   const [open, setOpen] = useState(false);
   const [inLibrary, setInLibrary] = useState(props.inLibrary)
@@ -28,7 +28,6 @@ const GameCard: FC<any> = (props) => {
   if (!isPlaceholder) {
     oneGameTime = game.min_playtime === game.max_playtime;
   }
-
   const cardStyle = {
     fontSize: '.75rem',
     padding: '0px 15px',
@@ -92,7 +91,7 @@ const GameCard: FC<any> = (props) => {
         color='secondary'
         /> :
         <Image
-          src={game.image_url}
+          src={game.image_url ? game.image_url : "/catan.png"}
           alt={`${game.name} image`}
           width={175}
           height={175}
@@ -139,15 +138,24 @@ const GameCard: FC<any> = (props) => {
       >
         More Details
       </Button>
-      {isLibraryOwner ?
+      {isLibraryOwner && !isBulkUpdate ?
       <GameCardButton
         inLibrary={inLibrary}
         cardStyle={cardStyle}
-        removeGameFromLibrary={removeGameFromLibrary}
+        openEdit={openEdit}
         addGameToLibrary={addGameToLibrary}
         /> :
         null
       }
+      {isBulkUpdate ? <Button
+        variant='outlined'
+        className='addToLibrary'
+        style={cardStyle}
+        color='inherit'
+        onClick={mergeFunc}
+      >
+        Merge This Data
+      </Button> : null}
       <Modal
         open={open}
         onClose={handleClose}

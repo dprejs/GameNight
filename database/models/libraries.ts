@@ -17,7 +17,10 @@ const libraries = {
   //gets all games in user library
   getUserLibrary: (uid: string, order: string = 'name', dir: string = 'ASC'): Promise<any> => {
     return db.query(`SELECT * FROM games INNER JOIN libraries ON games.id = libraries.game_id WHERE uid=$1 ORDER BY games.${order} ${dir}`, [uid])
-  }
+  },
+  getggCafeLibrary: (order: string = 'name', dir: string = 'ASC') => {
+    return db.query(`SELECT * FROM games ORDER BY games.${order} ${dir}`)
+  },
 };
 
 export default libraries;

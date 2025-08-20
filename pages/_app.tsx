@@ -67,55 +67,10 @@ function MyApp({ Component, pageProps }) {
         </Head>
         <div className="banner">
           <Link href='/'>
-            <h1 className="Title">My Game Shelf</h1>
+            <h1 className="Title">Good Game Cafe</h1>
           </Link>
-
-          {loggedIn ? <><Tooltip title="open menu">
-            <IconButton
-              onClick={handleClick}
-              color="inherit"
-            >
-              <MenuRoundedIcon />
-            </IconButton>
-          </Tooltip>
-            <Menu
-              anchorEl={anchorEl}
-              id="account-menu"
-              open={open}
-              onClose={handleClose}
-              onClick={handleClose}
-            >
-              <MenuItem onClick={() => router.push('/library')}>
-                Library
-              </MenuItem>
-              <MenuItem onClick={() => router.push('/profile')}>
-                Profile
-              </MenuItem>
-              <MenuItem onClick={() => router.push('/')}>
-                Home
-              </MenuItem>
-              <MenuItem onClick={logout}>
-                Logout <LogoutRounded />
-              </MenuItem>
-              <MenuItem onClick={() => {
-                if (user) {
-                  navigator.clipboard.writeText(`https://mygameshelf.app/library/${user.uid}`);
-                  setCopyAlert(true);
-                  setTimeout(() => setCopyAlert(false), 15000);
-                }
-              }}>
-                Share Library <ShareRounded />
-              </MenuItem>
-            </Menu></> : null}
         </div>
-        {copyAlert ?
-        <Alert
-          onClose={() => setCopyAlert(false)}
-        >
-          Library Share Link Copied To Clipboard
-        </Alert> :
-        null
-        }
+
         <Component {...pageProps} />
         </ThemeProvider>
       </AuthProvider>
