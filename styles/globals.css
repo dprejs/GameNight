@@ -39,7 +39,7 @@ a {
 }
 
 .Title:hover {
-  cursor: pointer;
+  cursor: default;
 }
 
 .link {

@@ -1,12 +1,10 @@
-import React, { FC, useContext, useEffect, useState } from 'react';
+import React, { FC, useContext, useState } from 'react';
 import Image from 'next/image';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import parse from 'html-react-parser';
 import Modal from '@mui/material/Modal';
-import Box from '@mui/material/Box';
 import axios from 'axios';
-import modalBoxStyle from './modalStyle';
 import { AuthContext } from '../contexts/AuthContext';
 import SingleTime from './gamePlayers/singleTime';
 import TimeRange from './gamePlayers/timeRange';
@@ -19,12 +17,10 @@ import BggRating from './bggRating';
 
 const GameCard: FC<any> = (props) => {
   const { game, isLibraryOwner, isPlaceholder, isBulkUpdate, mergeFunc, openEdit } = props;
-  const [isFavorite, setFavorite] = useState(false);
   const [open, setOpen] = useState(false);
   const [inLibrary, setInLibrary] = useState(props.inLibrary)
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  const user = useContext(AuthContext);
   let oneGameTime = true
   if (!isPlaceholder) {
     if (game.max_playtime === 0) {
@@ -56,7 +52,7 @@ const GameCard: FC<any> = (props) => {
         game: game,
         user: idtoken,
       }
-      axios.post(`/../api/library/addGame/?uid=${user.uid}`, req);
+      axios.post(`/../api/library/addGame/`, req);
       setInLibrary(true);
       props.updateLibrary(game);
     })
@@ -65,13 +61,6 @@ const GameCard: FC<any> = (props) => {
       })
   }
 
-  const removeGameFromLibrary = () => {
-    auth.currentUser.getIdToken(true).then((idToken) => {
-      axios.delete(`/../api/library/removeGame/?uid=${user.uid}&game_id=${game.id}&token=${idToken}`)
-    })
-    props.updateList();
-    setInLibrary(false);
-  }
   const gameTimeDisplay = (oneGameTime) => {
     return (
       <>
@@ -103,14 +92,7 @@ const GameCard: FC<any> = (props) => {
           />
         }
       </div>
-      {/* <IconButton
-          aria-label="add to favorites"
-          color="primary"
-          className="favoriteButton"
-          onClick={() => setFavorite(!isFavorite)}
-        >
-          {isFavorite ? <FavoriteRoundedIcon fontSize="large" /> : <FavoriteBorderRoundedIcon fontSize="large" />}
-        </IconButton> */}
+
       <div className="gameName" style={{ fontSize: fontSize }}>
         {isPlaceholder ? <Skeleton variant='text' height={70} sx={{ fontSize: fontSize, bgcolor: 'grey.500' }} /> :
           game.name

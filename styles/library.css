@@ -277,7 +277,7 @@
 }
 
 .libraryFilter>* {
-  margin: 2px 0px;
+  margin: 3px 0px;
 }
 
 .filterCategory {
@@ -286,6 +286,9 @@
   align-items: center;
   flex-wrap: wrap;
   gap: 2px;
+}
+.filterCategory .location:hover{
+  cursor: pointer;
 }
 
 .selected {

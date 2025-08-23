@@ -17,26 +17,8 @@ function valuetext(value: number) {
   return `${value} minutes`;
 }
 const LibraryFilter: FC<any> = ({ filter, setFilter, setLibrary, filterSearch, setFilterSearch, filterLength, setFilterLength, filterAge, setFilterAge, filterCategory, setFilterCategory, filterPlayers, setFilterPlayers, groupCategory, setGroupCategory }) => {
-  const [value, setValue] = React.useState<number | string | Array<number | string>>(
-    480,
-  );
-  const [currentSort, setCurrentSort] = useState(['name', 'ASC']);
-  const user = useContext(AuthContext);
-  const handleChange = (event: Event, newValue: number | number[]) => {
-    setFilter({
-      ...filter,
-      gameLength: newValue,
-    })
-    setValue(newValue)
-  };
 
-  const handleSliderNumChange = (event) => {
-    setFilter({
-      ...filter,
-      gameLength: event.target.value,
-    })
-    setValue(event.target.value === '' ? '' : Number(event.target.value))
-  }
+  const [currentSort, setCurrentSort] = useState(['name', 'ASC']);
 
   const handleBlur = () => {
     if (filterLength < 0) {
@@ -46,13 +28,6 @@ const LibraryFilter: FC<any> = ({ filter, setFilter, setLibrary, filterSearch, s
     }
   }
 
-  const filterChange = (event) => {
-    event.preventDefault();
-    setFilter({
-      ...filter,
-      [event.target.name]: event.target.value,
-    });
-  }
 
   const resetFilters = (event) => {
     event.preventDefault();
@@ -76,7 +51,7 @@ const LibraryFilter: FC<any> = ({ filter, setFilter, setLibrary, filterSearch, s
   }
 
   const sortLibrary = (sortBy, order, group=groupCategory) => {
-    axios.get(`../api/library?uid=${user.uid}&sortBy=${sortBy}&order=${order}&group=${group}`).then((res) => {
+    axios.get(`../api/library?&sortBy=${sortBy}&order=${order}&group=${group}`).then((res) => {
       setLibrary(res.data);
     })
       .catch((err) => {
@@ -116,9 +91,6 @@ const LibraryFilter: FC<any> = ({ filter, setFilter, setLibrary, filterSearch, s
           <Grid container spacing={2} alignItems="center">
             <Grid item xs>
               <Slider
-                // aria-label="Game length"
-                // getAriaValueText={valuetext}
-                // valueLabelDisplay="auto"
                 value={typeof filterLength === 'number' ? filterLength : 0}
                 min={0}
                 max={480}
@@ -171,6 +143,7 @@ const LibraryFilter: FC<any> = ({ filter, setFilter, setLibrary, filterSearch, s
             <button className={`location Co-Op ${filterCategory.includes("Co-Op") ? "selected" : ""}`} onClick={e => handleCategoryFilter("Co-Op")}>Co-Op</button>
           </div>
         </div>
+        <div className="filterDivider" />
         <Button
           variant="outlined"
           color="inherit"
