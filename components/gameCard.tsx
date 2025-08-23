@@ -15,6 +15,7 @@ import GameCardButton from './gameCardButtons';
 import { Skeleton } from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress';
 import { auth } from './firebase';
+import BggRating from './bggRating';
 
 const GameCard: FC<any> = (props) => {
   const { game, isLibraryOwner, isPlaceholder, isBulkUpdate, mergeFunc, openEdit } = props;
@@ -26,7 +27,11 @@ const GameCard: FC<any> = (props) => {
   const user = useContext(AuthContext);
   let oneGameTime = true
   if (!isPlaceholder) {
-    oneGameTime = game.min_playtime === game.max_playtime;
+    if (game.max_playtime === 0) {
+      oneGameTime = true;
+    } else {
+      oneGameTime = game.min_playtime === game.max_playtime;
+    }
   }
   const cardStyle = {
     fontSize: '.75rem',
@@ -35,10 +40,10 @@ const GameCard: FC<any> = (props) => {
     height: '30px',
     alignSelf: 'end',
     margin: '0px 4px',
-}
+  }
   let fontSize = '25px';
-  if (!isPlaceholder){
-    if (game.name.length > 50){
+  if (!isPlaceholder) {
+    if (game.name.length > 50) {
       fontSize = '15px';
     } else if (game.name.length > 30) {
       fontSize = '20px';
@@ -49,15 +54,15 @@ const GameCard: FC<any> = (props) => {
     auth.currentUser.getIdToken(true).then((idtoken) => {
       const req = {
         game: game,
-        user:idtoken,
+        user: idtoken,
       }
       axios.post(`/../api/library/addGame/?uid=${user.uid}`, req);
       setInLibrary(true);
       props.updateLibrary(game);
     })
-    .catch((err) => {
-      console.error('Error geting user id token', err);
-    })
+      .catch((err) => {
+        console.error('Error geting user id token', err);
+      })
   }
 
   const removeGameFromLibrary = () => {
@@ -69,14 +74,14 @@ const GameCard: FC<any> = (props) => {
   }
   const gameTimeDisplay = (oneGameTime) => {
     return (
-    <>
-      {oneGameTime ? <SingleTime
-        min_playtime={game.min_playtime}
-      /> : <TimeRange
-        min_playtime={game.min_playtime}
-        max_playtime={game.max_playtime}
-      />}
-    </>
+      <>
+        {oneGameTime ? <SingleTime
+          min_playtime={game.min_playtime}
+        /> : <TimeRange
+          min_playtime={game.min_playtime}
+          max_playtime={game.max_playtime}
+        />}
+      </>
     )
 
   }
@@ -86,16 +91,16 @@ const GameCard: FC<any> = (props) => {
         className="gameImage"
       >
         {isPlaceholder ? <CircularProgress
-        size={175}
-        thickness={5}
-        color='secondary'
+          size={175}
+          thickness={5}
+          color='secondary'
         /> :
-        <Image
-          src={game.image_url ? game.image_url : "/catan.png"}
-          alt={`${game.name} image`}
-          width={175}
-          height={175}
-        />
+          <Image
+            src={game.image_url ? game.image_url : "/catan.png"}
+            alt={`${game.name} image`}
+            width={175}
+            height={175}
+          />
         }
       </div>
       {/* <IconButton
@@ -106,82 +111,133 @@ const GameCard: FC<any> = (props) => {
         >
           {isFavorite ? <FavoriteRoundedIcon fontSize="large" /> : <FavoriteBorderRoundedIcon fontSize="large" />}
         </IconButton> */}
-      <div className="gameName" style={{fontSize:fontSize}}>
-        {isPlaceholder ? <Skeleton variant='text' height={70} sx={{fontSize:fontSize, bgcolor:'grey.500'}}/> :
-        game.name
+      <div className="gameName" style={{ fontSize: fontSize }}>
+        {isPlaceholder ? <Skeleton variant='text' height={70} sx={{ fontSize: fontSize, bgcolor: 'grey.500' }} /> :
+          game.name
         }
       </div>
-      <div className="gamePlayers">
-        {isPlaceholder ? <Skeleton variant='text' width={50} sx={{bgcolor: 'grey.500'}}/> :
-        `${game.min_players}-${game.max_players} Players`
-        }
+      <div className='gameInfoRow'>
+        <div className={`location ${isPlaceholder || typeof game.category != "string" ? "" : game.category.replace("2", "two")}`}>
+          {isPlaceholder ? <Skeleton variant='text' width={50} sx={{ bgcolor: 'grey.500' }} /> :
+            `${game.category}`
+          }
+        </div>
+        <div className="gamePlayers">
+          {isPlaceholder ? <Skeleton variant='text' width={50} sx={{ bgcolor: 'grey.500' }} /> :
+            `${game.min_players}-${game.max_players} Players`
+          }
+        </div>
       </div>
       <div className="cardDivider" />
-      {isPlaceholder ? null : gameTimeDisplay(oneGameTime)}
-      <div className="gameAge">
-        {isPlaceholder ? <Skeleton variant='text' width={30} sx={{bgcolor: 'grey.500'}}/> :
-        `Ages ${game.min_age}+`
-        }
+      <div className='gameInfoRow'>
+        {isPlaceholder ? null : gameTimeDisplay(oneGameTime)}
+        <div className="gameAge">
+          {isPlaceholder ? <Skeleton variant='text' width={30} sx={{ bgcolor: 'grey.500' }} /> :
+            `Ages ${game.min_age}+`
+          }
+        </div>
       </div>
       <div className="gameDescription">
-        {isPlaceholder ? <Skeleton variant='text' height={180} sx={{bgcolor: 'grey.500', marginTop: '-30px'}}/> :
-        parse(game.description)
+        {isPlaceholder ? <Skeleton variant='text' height={180} sx={{ bgcolor: 'grey.500', marginTop: '-30px' }} /> :
+          parse(game.description)
         }
       </div>
-      {isPlaceholder ? null :
-      <><Button
-        variant="outlined"
-        className="detailButton"
-        style={cardStyle}
-        onClick={handleOpen}
-        color="inherit"
-      >
-        More Details
-      </Button>
-      {isLibraryOwner && !isBulkUpdate ?
-      <GameCardButton
-        inLibrary={inLibrary}
-        cardStyle={cardStyle}
-        openEdit={openEdit}
-        addGameToLibrary={addGameToLibrary}
-        /> :
-        null
-      }
-      {isBulkUpdate ? <Button
-        variant='outlined'
-        className='addToLibrary'
-        style={cardStyle}
-        color='inherit'
-        onClick={mergeFunc}
-      >
-        Merge This Data
-      </Button> : null}
-      <Modal
-        open={open}
-        onClose={handleClose}
-      >
-        <Box sx={modalBoxStyle}>
-          <div className="game-details">
-            <span className="details-banner">
-              <h2>
-                {game.name}
-              </h2>
-              <IconButton aria-label="close details" onClick={handleClose}>
-                <CloseRounded />
-              </IconButton>
-            </span>
-            <div className="year-published">
-              Published {game.year_published}
-            </div>
-            <div className="game-description">
-              {parse(game.description)}
-            </div>
-          </div>
-        </Box>
-      </Modal>
-    </>
-      }
+      <div className='cardButtons'>
+        {isPlaceholder ? null :
+          <><Button
+            variant="outlined"
+            className="detailButton"
+            style={cardStyle}
+            onClick={handleOpen}
+            color="inherit"
+          >
+            More Details
+          </Button>
+            {isLibraryOwner && !isBulkUpdate ?
+              <GameCardButton
+                inLibrary={inLibrary}
+                cardStyle={cardStyle}
+                openEdit={openEdit}
+                addGameToLibrary={addGameToLibrary}
+              /> :
+              null
+            }
+            {isBulkUpdate ? <Button
+              variant='outlined'
+              className='addToLibrary'
+              style={cardStyle}
+              color='inherit'
+              onClick={mergeFunc}
+            >
+              Merge This Data
+            </Button> : null}
+            <Modal
+              open={open}
+              onClose={handleClose}
+            >
+              <div className="game-details">
+                <span className="details-banner">
+                  <h2>
+                    {game.name}
+                  </h2>
+                  <IconButton
+                    className='iconButton'
+                    aria-label="close details"
+                    onClick={handleClose}
+                  >
+                    <CloseRounded />
+                  </IconButton>
+                </span>
+                <Image
+                  src={game.image_url ? game.image_url : "/catan.png"}
+                  alt={`${game.name} image`}
+                  width={300}
+                  height={300}
+                />
+                <div className='details-banner'>
+                  <div className='details-stats'>
+                    <div className="year-published">
+                      Board Game Geek Rating:
+                      <BggRating value={game.bgg_rating} />
+                    </div>
+                    <div className='year-published'>
+                      Comlexity {game.difficulty}/5.00
+                    </div>
+                    <div className='year-published'>
+                      {/[a-zA-Z]/g.test(game.best_player_count) ? game.best_player_count : `Best Player Count: ${game.best_player_count}`}
+                    </div>
+                  </div>
+                  <div className='game-types'>
+                    {game.game_type && game.game_type.length ?
+                      <>
+                        <span>
+                          Game Types:
+                        </span>
+                        {game.game_type.map((type, i) => {
+                          return (
+                            <div key={i} className='game-type'>
+                              {type}
+                            </div>
+                          )
+                        })}
+                      </>
+                      : null
+                    }
+                  </div>
+                </div>
+                <div className="game-description">
+                  {typeof game.bgg_description != "string" ?
+                    "" :
+                    parse(game.bgg_description)
+                  }
+                </div>
+              </div>
+            </Modal>
+          </>
+        }
+
       </div>
+    </div>
 
   );
 };

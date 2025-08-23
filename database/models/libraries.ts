@@ -18,8 +18,8 @@ const libraries = {
   getUserLibrary: (uid: string, order: string = 'name', dir: string = 'ASC'): Promise<any> => {
     return db.query(`SELECT * FROM games INNER JOIN libraries ON games.id = libraries.game_id WHERE uid=$1 ORDER BY games.${order} ${dir}`, [uid])
   },
-  getggCafeLibrary: (order: string = 'name', dir: string = 'ASC') => {
-    return db.query(`SELECT * FROM games ORDER BY games.${order} ${dir}`)
+  getggCafeLibrary: (order: string = 'name', dir: string = 'ASC', group: boolean = true) => {
+    return db.query(`SELECT * FROM games ORDER BY ${group ? "array_position(array['Lighter'::varchar, 'Standard'::varchar, 'Advanced'::varchar, '2-Player'::varchar, 'Co-Op'::varchar, 'Party'::varchar, 'Classic'::varchar], games.category)," : ""} games.${order} ${dir}`)
   },
 };
 

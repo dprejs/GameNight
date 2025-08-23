@@ -9,8 +9,8 @@ export const config = {
 const { getggCafeLibrary } = libraries;
 export default function handler(req, res) {
   if (req.method === 'GET') {
-    const { sortBy, order } = req.query;
-    getggCafeLibrary(sortBy || 'name', order || 'ASC')
+    const { sortBy, order, group } = req.query;
+    getggCafeLibrary(sortBy || 'name', order || 'ASC', group === 'true' || false )
       .then((result) => {
         res.status(200).send(result.rows);
       })

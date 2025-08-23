@@ -49,6 +49,12 @@ const Library: FC = (props) => {
     gameLength: 480,
     youngPlayer: 0,
   });
+  const [filterSearch, setFilterSearch] = useState("");
+  const [filterPlayers, setFilterPlayers] = useState(0);
+  const [filterLength, setFilterLength] = useState(480);
+  const [filterAge, setFilterAge] = useState(0);
+  const [filterCategory, setFilterCategory] = useState([]);
+  const [groupCategory, setGroupCategory] = useState(false)
   const [moreSearchResults, setMoreSearchResults] = useState(false);
   const [searchIndex, setSearchIndex] = useState(0);
   const [searchIds, setSearchIds] = useState([]);
@@ -230,26 +236,35 @@ const Library: FC = (props) => {
   // Library Filter functions          /////////////////
   /////////////////////////////////////////////////////
   const searchFilter = ({ name }: game): boolean => {
-    const regex = new RegExp(filter.search, 'i');
+    const regex = new RegExp(filterSearch, 'i');
     return regex.test(name);
   };
 
-  const playersFilter = ({ max_players, min_players }: game): boolean => max_players >= filter.numPlayers && min_players <= filter.numPlayers;
+  const playersFilter = ({ max_players, min_players }: game): boolean => max_players >= filterPlayers && min_players <= filterPlayers;
 
   const lengthFilter = ({ min_playtime }: game): boolean => {
-    return min_playtime <= filter.gameLength;
+    return min_playtime <= filterLength;
+  }
+  const categoryFilter = ({category}: game): boolean => {
+    if (category === "2-Player") {
+      return filterCategory.includes("two-Player");
+    } else {
+      return filterCategory.includes(category);
+    }
   }
 
-  const ageFilter = ({ min_age }: game): boolean => min_age <= filter.youngPlayer;
+  const ageFilter = ({ min_age }: game): boolean => min_age <= filterAge;
 
   const applyFilters = ((game: game): boolean => {
-    if (filter.search.length > 1 && !searchFilter(game)) {
+    if (filterSearch.length > 1 && !searchFilter(game)) {
       return false;
-    } else if (filter.numPlayers && !playersFilter(game)) {
+    } else if (filterPlayers && !playersFilter(game)) {
       return false;
-    } else if (filter.gameLength < 480 && !lengthFilter(game)) {
+    } else if (filterLength< 480 && !lengthFilter(game)) {
       return false;
-    } else if (filter.youngPlayer && !ageFilter(game)) {
+    } else if (filterAge && !ageFilter(game)) {
+      return false;
+    } else if (filterCategory.length && !categoryFilter(game)) {
       return false;
     } else {
       return true;
@@ -310,10 +325,39 @@ const Library: FC = (props) => {
             onClose={toggleDrawer('left', false)}
             onOpen={toggleDrawer('left', true)}
           >
-            <LibraryFilter filter={filter} setFilter={setFilter} setLibrary={setLibrary} />
+            <LibraryFilter
+              filter={filter}
+              setFilter={setFilter}
+              filterSearch={filterSearch}
+              setFilterSearch={setFilterSearch}
+              filterPlayers={filterPlayers}
+              setFilterPlayers={setFilterPlayers}
+              filterLength={filterLength}
+              setFilterLength={setFilterLength}
+              filterAge={filterAge}
+              setFilterAge={setFilterAge}
+              filterCategory={filterCategory}
+              setFilterCategory={setFilterCategory}
+              setLibrary={setLibrary} />
           </SwipeableDrawer>
         </div> :
-        <LibraryFilter filter={filter} setFilter={setFilter} setLibrary={setLibrary} />
+        <LibraryFilter
+          filter={filter}
+          setFilter={setFilter}
+          setLibrary={setLibrary}
+          filterSearch={filterSearch}
+          setFilterSearch={setFilterSearch}
+          filterPlayers={filterPlayers}
+          setFilterPlayers={setFilterPlayers}
+          filterLength={filterLength}
+          setFilterLength={setFilterLength}
+          filterAge={filterAge}
+          setFilterAge={setFilterAge}
+          filterCategory={filterCategory}
+          setFilterCategory={setFilterCategory}
+          groupCategory={groupCategory}
+          setGroupCategory={setGroupCategory}
+        />
       }
       <div className='libraryBody'>
         <div className='libraryHead'>

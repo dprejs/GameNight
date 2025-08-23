@@ -114,6 +114,7 @@ const EditForm: FC<any> = (props) => {
     }
     axios.get(`https://www.boardgamegeek.com/xmlapi2/search?query=${searchInput}&type=boardgame,boardgameexpansion&exact=${exact}`)
       .then((res) => {
+        setSearchLoading(false);
         let ids = {};
         convert.xml2js(res.data).elements[0].elements.forEach((element) => {
           ids[element.attributes.id] = true;
@@ -123,6 +124,9 @@ const EditForm: FC<any> = (props) => {
         if (idsArray.length > 20) {
           setMoreSearchResults(true)
           setSearchIndex(20)
+        }
+        if (idsArray.length > 0) {
+          setSearchLoading(true)
         }
         axios.get(`https://www.boardgamegeek.com/xmlapi2/thing?id=${idsArray.slice(0, 20).toString()}&stats=1`)
           .then((res) => parseGameCards(res, false))
