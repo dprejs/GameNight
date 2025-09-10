@@ -1,11 +1,10 @@
-import React, { FC, useContext, useState } from 'react';
+import React, { FC, useState } from 'react';
 import { styled } from '@mui/material/styles';
 import Slider from '@mui/material/Slider';
 import Grid from '@mui/material/Grid';
 import MuiInput from '@mui/material/Input';
 import Button from '@mui/material/Button';
 import axios from 'axios';
-import { AuthContext } from '../contexts/AuthContext';
 import { KeyboardArrowDownRounded, KeyboardArrowUpRounded } from '@mui/icons-material';
 import { IconButton } from '@mui/material';
 import Checkbox from '@mui/material/Checkbox';

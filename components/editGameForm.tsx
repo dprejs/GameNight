@@ -9,7 +9,7 @@ import { IconButton } from '@mui/material';
 
 
 const EditForm: FC<any> = (props) => {
-  const { game, handleClose, updateGameByIndex, removeGameById, addGameToList } = props;
+  const { game, handleClose, updateGameById, removeGameById, addGameToList } = props;
   const [name, setName] = useState(game.name);
   const [minPlayers, setMinPlayers] = useState(game.min_players);
   const [maxPlayers, setMaxPlayers] = useState(game.max_players);
@@ -186,7 +186,7 @@ const EditForm: FC<any> = (props) => {
           setUpdateLoading(false)
           if (res.status === 200) {
             setUpdateResponse("sucess")
-            updateGameByIndex(game.index, newGame);
+            updateGameById(game.id, newGame);
           } else {
             setUpdateResponse("error")
             console.log("update failed", res.data);

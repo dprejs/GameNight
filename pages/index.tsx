@@ -66,6 +66,11 @@ const Library: FC = () => {
     setLibrary([...library.slice(0, i), game, ...library.slice(i + 1)])
   }
 
+  const updateGameById = (id: string, game) => {
+    const i = library.findIndex(game => game.id === id)
+    setLibrary([...library.slice(0, i), game, ...library.slice(i + 1)])
+  }
+
   //////////////////////////////////////////////////////
   // Library Filter functions          /////////////////
   /////////////////////////////////////////////////////
@@ -193,8 +198,8 @@ const Library: FC = () => {
             <Button
               variant="outlined"
               onClick={() => {
-                setSelectedGameEdit({})
                 setEditGameOpen(true);
+                setSelectedGameEdit({});
               }}
               className={device.isMobile ? "addGame mobile" : "addGame"}
               endIcon={<AddCircleOutlineRoundedIcon />}
@@ -229,13 +234,15 @@ const Library: FC = () => {
           <EditForm
             game={selectedGameEdit}
             handleClose={() => { setEditGameOpen(false) }}
-            updateGameByIndex={updateGameByIndex}
+            removeGameById={removeGameById}
+            updateGameById={updateGameById}
             addGameToList={addGameToList}
           />
           :
           <EditForm
             handleClose={() => { setEditGameOpen(false) }}
-            updateGameByIndex={updateGameByIndex}
+            updateGameById={updateGameById}
+            removeGameById={removeGameById}
             addGameToList={addGameToList}
           />
         }
